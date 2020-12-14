@@ -14,39 +14,61 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import static view.Dashboard.jlNamaLengkap;
 
 /**
  *
  * @author Moch Billy Refanto
  */
 public class LoginMember extends javax.swing.JFrame {
-    static String username,password,query,validasiUsername, usernameData,passwordData;
+    static String username,password,query,validasiUsername, usernameData,passwordData,namaLengkapData,queryShow,id;
     private void clearForm(){
         tfUsername.setText(null);
         tpPassword.setText(null);
     }
+
+    public static String getNamaLengkapData() {
+        return namaLengkapData;
+    }
+    
+    
     
     private void loginMember() throws SQLException{
         username = tfUsername.getText().trim();
         password = String.valueOf(tpPassword.getPassword());
         validasiUsername = username.toLowerCase();
-        query = "SELECT * FROM m_users";
+        query = "SELECT * FROM m_users WHERE username = '"+username+"' and password = '"+password+"'";
         
-        Connection conn = (Connection)Config.configDB();
-        Statement statement = conn.createStatement();
-        ResultSet res = statement.executeQuery(query);
-        
-       
         try{
             if (validasiUsername.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Username / Password Tidak Boleh Kosong!");
+            System.out.println("Username / Password Tidak Boleh Kosong!");
             }else{
+                Connection conn = (Connection)Config.configDB();
+                Statement statement = conn.createStatement();
+                ResultSet res = statement.executeQuery(query);  
+                
                 while(res.next()){
                     usernameData = res.getString("username");
                     passwordData = res.getString("password");
+                    System.out.println("Berhasil Login!");
+                    
+                    //query untuk ambil data berdasarkan username, ketika login berhasil
+                    queryShow = "SELECT * FROM m_users WHERE username = '"+usernameData+"'";
+                    
+                    //get m_users
+                    namaLengkapData = res.getString("nama_lengkap");
+                    id = res.getString("id");
+                    System.out.println(
+                            "ID m_users : " + id
+                            + "\nNama       : " + namaLengkapData);
+                    
+//                    new Dashboard().setVisible(true);
+                    
                 }
                 if (!validasiUsername.equals(usernameData) || !password.equals(passwordData)) {
                     JOptionPane.showMessageDialog(null, "Username / Password Salah!");
+                    System.out.println("Username / Password Salah!");
                 }else{
                     Dashboard dashboard = new Dashboard();
                     this.dispose();
@@ -82,7 +104,7 @@ public class LoginMember extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         btnLogin = new java.awt.Button();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        jlRegistrasi = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -128,13 +150,13 @@ public class LoginMember extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
         jLabel4.setText("Username");
 
-        jLabel5.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(0, 51, 255));
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel5.setText("Daftar");
-        jLabel5.addMouseListener(new java.awt.event.MouseAdapter() {
+        jlRegistrasi.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
+        jlRegistrasi.setForeground(new java.awt.Color(0, 51, 255));
+        jlRegistrasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jlRegistrasi.setText("Daftar");
+        jlRegistrasi.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel5MouseClicked(evt);
+                jlRegistrasiMouseClicked(evt);
             }
         });
 
@@ -159,7 +181,7 @@ public class LoginMember extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jlRegistrasi, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(btnLogin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(125, Short.MAX_VALUE))
         );
@@ -181,7 +203,7 @@ public class LoginMember extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jLabel5))
+                    .addComponent(jlRegistrasi))
                 .addContainerGap(227, Short.MAX_VALUE))
         );
 
@@ -204,11 +226,11 @@ public class LoginMember extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
-    private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
+    private void jlRegistrasiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlRegistrasiMouseClicked
       Register reg = new Register();
        this.dispose();
        reg.setVisible(true);
-    }//GEN-LAST:event_jLabel5MouseClicked
+    }//GEN-LAST:event_jlRegistrasiMouseClicked
 
     private void tpPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tpPasswordActionPerformed
         // TODO add your handling code here:
@@ -254,8 +276,8 @@ public class LoginMember extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jlRegistrasi;
     private javax.swing.JTextField tfUsername;
     private javax.swing.JPasswordField tpPassword;
     // End of variables declaration//GEN-END:variables

@@ -5,6 +5,7 @@
  */
 package view;
 
+import controller.App;
 import controller.Config;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +13,10 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.SQLException;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+
+import static view.LoginMember.namaLengkapData;
 
 
 
@@ -20,49 +24,52 @@ import javax.swing.JOptionPane;
  *
  * @author Moch Billy Refanto
  */
-public class Dashboard extends javax.swing.JFrame {
-    static String query,namaLengkap;
+public class Dashboard extends javax.swing.JFrame{
+   
+    
+    static String query,namaLengkap,tanggalLocal;
     
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     LocalDateTime now = LocalDateTime.now();
     String dateToday = dateTimeFormatter.format(now);
     
+    
+    private void showData(){
+        jlNamaLengkap.setText(namaLengkapData);
+    }
+
     private void tanggalSekarang(){
-        jlTanggal.setText(dateToday);
-        
+        jlTanggal.setText(dateToday);        
     }
     
-    private void displayNama() throws SQLException{
-        query = "SELECT * FROM m_users";
-        
-        Connection conn = (Connection)Config.configDB();
-        Statement statement = conn.createStatement();
-        ResultSet res = statement.executeQuery(query);
-        try{
-            while(res.next()){
-            namaLengkap = res.getString("nama_lengkap");
-            jlNamaLengkap.setText(namaLengkap);
-        }
-        }catch(SQLException e){
-            JOptionPane.showMessageDialog(this, e.getMessage());
-        }
-        
-    }
+//    private void displayNama() throws SQLException{
+//        query = "SELECT * FROM m_users";
+//        
+//        Connection conn = (Connection)Config.configDB();
+//        Statement statement = conn.createStatement();
+//        ResultSet res = statement.executeQuery(query);
+//        try{
+//            while(res.next()){
+//            namaLengkap = res.getString("nama_lengkap");
+//            jlNamaLengkap.setText(namaLengkap);
+//        }
+//        }catch(SQLException e){
+//            JOptionPane.showMessageDialog(this, e.getMessage());
+//        }
+//        
+//    }
 
     public static String getNamaLengkap() {
         return namaLengkap;
     }
-    
-    
-    
-    
-    
+
     /**
      * Creates new form Dashboard
      */
     public Dashboard() {
         initComponents();
         tanggalSekarang();
+        showData();
         
     }
 
@@ -93,10 +100,10 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel19 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
+        jlKeuangan1 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jlDashboard = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jlNamaLengkap = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
@@ -188,6 +195,10 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_drop_down_24px.png"))); // NOI18N
         jLabel21.setText("jLabel19");
 
+        jlKeuangan1.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jlKeuangan1.setForeground(new java.awt.Color(255, 255, 255));
+        jlKeuangan1.setText("Keluar");
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -216,7 +227,8 @@ public class Dashboard extends javax.swing.JFrame {
                                 .addComponent(jlInformarmasiMasjid, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jlKeuangan1, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel7Layout.setVerticalGroup(
@@ -249,7 +261,9 @@ public class Dashboard extends javax.swing.JFrame {
                 .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlDetailKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jlKeuangan1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jPanel8.setBackground(new java.awt.Color(7, 17, 44));
@@ -273,7 +287,7 @@ public class Dashboard extends javax.swing.JFrame {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addComponent(jlDashboard, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 31, Short.MAX_VALUE))
+                .addGap(0, 1, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -297,7 +311,7 @@ public class Dashboard extends javax.swing.JFrame {
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(76, 76, 76)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 7, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(82, 82, 82)
@@ -496,10 +510,6 @@ public class Dashboard extends javax.swing.JFrame {
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jlTanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -507,7 +517,11 @@ public class Dashboard extends javax.swing.JFrame {
                                 .addGap(26, 26, 26)
                                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(27, 27, 27)
-                                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jlTanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(23, 23, 23))))
         );
         layout.setVerticalGroup(
@@ -602,7 +616,8 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jlInventaris;
     private javax.swing.JLabel jlKepengurusan;
     private javax.swing.JLabel jlKeuangan;
-    private javax.swing.JLabel jlNamaLengkap;
+    private javax.swing.JLabel jlKeuangan1;
+    public static final javax.swing.JLabel jlNamaLengkap = new javax.swing.JLabel();
     private javax.swing.JLabel jlProfileMasjid;
     private javax.swing.JLabel jlTambahKeuangan;
     private javax.swing.JLabel jlTambahPengurus;

@@ -41,7 +41,7 @@
                           <Group type="102" alignment="1" attributes="0">
                               <Component id="jLabel3" min="-2" pref="242" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Component id="jLabel5" min="-2" pref="202" max="-2" attributes="0"/>
+                              <Component id="jlRegistrasi" min="-2" pref="202" max="-2" attributes="0"/>
                           </Group>
                           <Component id="btnLogin" alignment="0" min="-2" pref="442" max="-2" attributes="0"/>
                       </Group>
@@ -69,7 +69,7 @@
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jlRegistrasi" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="227" max="32767" attributes="0"/>
           </Group>
@@ -137,7 +137,7 @@
         <Property name="text" type="java.lang.String" value="Username"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel5">
+    <Component class="javax.swing.JLabel" name="jlRegistrasi">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tekton Pro" size="14" style="0"/>
@@ -149,7 +149,7 @@
         <Property name="text" type="java.lang.String" value="Daftar"/>
       </Properties>
       <Events>
-        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabel5MouseClicked"/>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jlRegistrasiMouseClicked"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel8">

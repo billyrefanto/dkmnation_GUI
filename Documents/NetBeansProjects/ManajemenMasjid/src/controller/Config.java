@@ -28,7 +28,7 @@ public class Config {
             
             DriverManager.registerDriver(new Driver());
             MySQLConfig = DriverManager.getConnection(url,user,password);
-            System.out.println("Koneksi Berhasil");
+            System.out.println("Terhubung Dengan Database!");
 //            JOptionPane.showMessageDialog(null, "Koneksi Berhasil");
 
         }catch(SQLException e){

@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
  */
 public class ProfilMasjid extends javax.swing.JFrame {
     
-    static String namaMasjid,luasTanah,alamat,kelurahan,kecamatan,kabupaten,kodePos,sejarahSingkat,tahunBerdiri,kapasitasMasjid;
+    static String namaMasjid,luasTanah,alamat,kelurahan,kecamatan,kabupaten,kodePos,sejarahSingkat,tahunBerdiri,kapasitasMasjid,queryInsert,queryShow;
     
     private void clearForm(){
         tfNamaMasjid.setText("");
@@ -46,7 +46,11 @@ public class ProfilMasjid extends javax.swing.JFrame {
                 || kodePos.isEmpty() || sejarahSingkat.isEmpty() 
                 || tahunBerdiri.isEmpty() || kapasitasMasjid.isEmpty()) {
            JOptionPane.showMessageDialog(this, "Data Tidak Boleh Kosong!");
+        }else{
+            
         }
+        
+        
     }
     
 
@@ -71,14 +75,14 @@ public class ProfilMasjid extends javax.swing.JFrame {
         jlNamaLengkap = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        jlLogo = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jlKeuangan = new javax.swing.JLabel();
         jlProfileMasjid = new javax.swing.JLabel();
         jlDaftarInventaris = new javax.swing.JLabel();
         jlInventaris = new javax.swing.JLabel();
-        jlInformarmasiMasjid = new javax.swing.JLabel();
+        jlInformasiMasjid = new javax.swing.JLabel();
         jlDaftarPengurus = new javax.swing.JLabel();
         jlDetailKeuangan = new javax.swing.JLabel();
         jlKepengurusan = new javax.swing.JLabel();
@@ -87,6 +91,7 @@ public class ProfilMasjid extends javax.swing.JFrame {
         jLabel19 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
+        jlKeluar = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jlDashboard = new javax.swing.JLabel();
         jlTanggal = new javax.swing.JLabel();
@@ -147,11 +152,11 @@ public class ProfilMasjid extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(7, 17, 44));
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_mosque_48px.png"))); // NOI18N
-        jLabel2.setText("DKMNATION");
+        jlLogo.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jlLogo.setForeground(new java.awt.Color(255, 255, 255));
+        jlLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_mosque_48px.png"))); // NOI18N
+        jlLogo.setText("DKMNATION");
 
         jPanel7.setBackground(new java.awt.Color(7, 17, 44));
         jPanel7.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 0, 2, 0, new java.awt.Color(224, 224, 224)));
@@ -182,10 +187,10 @@ public class ProfilMasjid extends javax.swing.JFrame {
             }
         });
 
-        jlInformarmasiMasjid.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jlInformarmasiMasjid.setForeground(new java.awt.Color(255, 255, 255));
-        jlInformarmasiMasjid.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_moon_star_24px.png"))); // NOI18N
-        jlInformarmasiMasjid.setText("Informasi Masjid");
+        jlInformasiMasjid.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jlInformasiMasjid.setForeground(new java.awt.Color(255, 255, 255));
+        jlInformasiMasjid.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_moon_star_24px.png"))); // NOI18N
+        jlInformasiMasjid.setText("Informasi Masjid");
 
         jlDaftarPengurus.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlDaftarPengurus.setForeground(new java.awt.Color(255, 255, 255));
@@ -217,6 +222,10 @@ public class ProfilMasjid extends javax.swing.JFrame {
         jLabel21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_drop_down_24px.png"))); // NOI18N
         jLabel21.setText("jLabel19");
 
+        jlKeluar.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jlKeluar.setForeground(new java.awt.Color(255, 255, 255));
+        jlKeluar.setText(" Keluar");
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -242,11 +251,12 @@ public class ProfilMasjid extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jlInformarmasiMasjid, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jlInformasiMasjid, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jlKeluar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -254,7 +264,7 @@ public class ProfilMasjid extends javax.swing.JFrame {
                 .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jlInformarmasiMasjid, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jlInformasiMasjid, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel20))
                 .addGap(3, 3, 3)
                 .addComponent(jlProfileMasjid, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -278,7 +288,9 @@ public class ProfilMasjid extends javax.swing.JFrame {
                 .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlDetailKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jlKeluar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel8.setBackground(new java.awt.Color(7, 17, 44));
@@ -302,14 +314,14 @@ public class ProfilMasjid extends javax.swing.JFrame {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addComponent(jlDashboard, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 31, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jlLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -323,7 +335,7 @@ public class ProfilMasjid extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(76, 76, 76)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -804,12 +816,12 @@ public class ProfilMasjid extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(ProfilMasjid.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        
+        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ProfilMasjid().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new ProfilMasjid().setVisible(true);
         });
     }
 
@@ -823,7 +835,6 @@ public class ProfilMasjid extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel3;
@@ -843,10 +854,12 @@ public class ProfilMasjid extends javax.swing.JFrame {
     private javax.swing.JLabel jlDaftarPengurus;
     private javax.swing.JLabel jlDashboard;
     private javax.swing.JLabel jlDetailKeuangan;
-    private javax.swing.JLabel jlInformarmasiMasjid;
+    private javax.swing.JLabel jlInformasiMasjid;
     private javax.swing.JLabel jlInventaris;
+    private javax.swing.JLabel jlKeluar;
     private javax.swing.JLabel jlKepengurusan;
     private javax.swing.JLabel jlKeuangan;
+    private javax.swing.JLabel jlLogo;
     private javax.swing.JLabel jlNamaLengkap;
     private javax.swing.JLabel jlProfileMasjid;
     private javax.swing.JLabel jlTambahKeuangan;

@@ -36,16 +36,7 @@ public class Register extends javax.swing.JFrame {
         tpKonfirmasiPassword.setText(null);
         
     }
-    private void validasi(String email){
-        email = tfEmail.getText();
-        password = String.valueOf(tpPassword.getPassword());
     
-        
-        if (!email.contains("@") && !email.contains(".com")) {
-            
-        }
-        
-    }
     private void registrasiAkun(){
         namaLengkap = tfNamaLengkap.getText();
         username = tfUsername.getText().trim();
@@ -63,8 +54,10 @@ public class Register extends javax.swing.JFrame {
                 || konfirmasiPassword.isEmpty() || jenisKelamin.isEmpty()
                 || kontak.isEmpty() || alamat.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Silahkan isi semua data!");
+            System.out.println("Silahkan isi semua data!");
         }else if(!password.equals(konfirmasiPassword)){
             JOptionPane.showMessageDialog(null, "Password tidak sama!");
+            System.out.println("Password tidak sama!");
         }else{
             queryReg = "INSERT INTO m_users(nama_lengkap,username,email,password,jenis_kelamin,kontak,alamat,level_user,created_at) VALUES (?,?,?,?,?,?,?,?,?)";
             try{
@@ -83,6 +76,8 @@ public class Register extends javax.swing.JFrame {
                
             
             JOptionPane.showMessageDialog(null, "Registrasi Berhasil!");
+            System.out.println("Registrasi Berhasil! "
+                    + "\nUsername : " + validasiUsername );
             cleanForm();
 
             
