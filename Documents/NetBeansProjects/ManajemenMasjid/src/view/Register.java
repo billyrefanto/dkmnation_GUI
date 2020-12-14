@@ -39,7 +39,7 @@ public class Register extends javax.swing.JFrame {
     
     private void registrasiAkun(){
         namaLengkap = tfNamaLengkap.getText();
-        username = tfUsername.getText().trim();
+        username = tfUsername.getText().trim().toLowerCase();
         email = tfEmail.getText().trim();
         password = String.valueOf(tpPassword.getPassword());
         konfirmasiPassword = String.valueOf(tpKonfirmasiPassword.getPassword());
@@ -127,6 +127,8 @@ public class Register extends javax.swing.JFrame {
         taAlamat = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
         labelLogin = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1000, 700));
@@ -137,7 +139,8 @@ public class Register extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Registrasi Akun");
 
-        tfNamaLengkap.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        tfNamaLengkap.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tfNamaLengkap.setMargin(new java.awt.Insets(5, 5, 5, 5));
         tfNamaLengkap.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tfNamaLengkapFocusGained(evt);
@@ -169,7 +172,8 @@ public class Register extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
         jLabel7.setText("Email Akrif");
 
-        tfEmail.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        tfEmail.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tfEmail.setMargin(new java.awt.Insets(5, 5, 5, 5));
         tfEmail.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tfEmailFocusGained(evt);
@@ -181,7 +185,8 @@ public class Register extends javax.swing.JFrame {
             }
         });
 
-        tfUsername.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        tfUsername.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tfUsername.setMargin(new java.awt.Insets(5, 5, 5, 5));
         tfUsername.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tfUsernameFocusGained(evt);
@@ -205,7 +210,8 @@ public class Register extends javax.swing.JFrame {
         jLabel11.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
         jLabel11.setText("Kontak");
 
-        tfKontak.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        tfKontak.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tfKontak.setMargin(new java.awt.Insets(5, 5, 5, 5));
         tfKontak.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tfKontakFocusGained(evt);
@@ -225,9 +231,16 @@ public class Register extends javax.swing.JFrame {
         cbSyarat.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
         cbSyarat.setLabel("saya mengisi data dengan benar dan setuju dengan \nsyarat & ketentuan yang berlaku");
 
+        tpPassword.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tpPassword.setMargin(new java.awt.Insets(5, 5, 5, 5));
+
+        tpKonfirmasiPassword.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tpKonfirmasiPassword.setMargin(new java.awt.Insets(5, 5, 5, 5));
+
         taAlamat.setColumns(20);
-        taAlamat.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        taAlamat.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         taAlamat.setRows(5);
+        taAlamat.setMargin(new java.awt.Insets(5, 5, 5, 5));
         jScrollPane1.setViewportView(taAlamat);
 
         jLabel3.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
@@ -305,8 +318,8 @@ public class Register extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(tfEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(jLabel9))
@@ -334,7 +347,26 @@ public class Register extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(labelLogin))
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
+        );
+
+        jPanel3.setBackground(new java.awt.Color(7, 17, 44));
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_mosque_48px.png"))); // NOI18N
+        jLabel5.setText("DKMNATION");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -342,15 +374,18 @@ public class Register extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(74, 74, 74)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 591, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -442,13 +477,17 @@ public class Register extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelLogin;
     private javax.swing.JTextArea taAlamat;

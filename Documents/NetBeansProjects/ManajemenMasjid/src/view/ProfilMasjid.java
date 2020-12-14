@@ -5,15 +5,30 @@
  */
 package view;
 
+import controller.Config;
 import javax.swing.JOptionPane;
+import java.sql.PreparedStatement;
+import java.sql.Connection;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.awt.HeadlessException;
+import java.sql.SQLException;
+
+import static view.LoginMember.id;
+import static view.LoginMember.namaLengkapData;
 
 /**
  *
  * @author Moch Billy Refanto
  */
 public class ProfilMasjid extends javax.swing.JFrame {
+    Dashboard dashboard = new Dashboard();
     
-    static String namaMasjid,luasTanah,alamat,kelurahan,kecamatan,kabupaten,kodePos,sejarahSingkat,tahunBerdiri,kapasitasMasjid,queryInsert,queryShow;
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+    LocalDateTime now = LocalDateTime.now();
+    String dateToday = dateTimeFormatter.format(now);
+    
+    static String namaMasjid,luasTanah,alamatMasjid,kelurahan,kecamatan,kabupaten,kodePos,sejarahSingkat,tahunBerdiri,kapasitasMasjid,queryInsert,queryShow,idLogin;
     
     private void clearForm(){
         tfNamaMasjid.setText("");
@@ -28,10 +43,15 @@ public class ProfilMasjid extends javax.swing.JFrame {
         tfKapasitasMasjid.setText("");
     }
     
+    private void showData(){
+        jlNamaLengkap.setText(namaLengkapData);
+        jlTanggal.setText(dateToday);
+    }
+    
     private void addProfilMasjid(){
         namaMasjid = tfNamaMasjid.getText();
         luasTanah = tfLuasTanah.getText();
-        alamat = tfAlamat.getText();
+        alamatMasjid = tfAlamat.getText();
         kelurahan = tfKelurahan.getText();
         kecamatan = tfKecamatan.getText();
         kabupaten = tfKabupaten.getText();
@@ -41,13 +61,40 @@ public class ProfilMasjid extends javax.swing.JFrame {
         kapasitasMasjid = tfKapasitasMasjid.getText();
         
         if (namaMasjid.isEmpty() || luasTanah.isEmpty() 
-                || alamat.isEmpty() || kelurahan.isEmpty() 
+                || alamatMasjid.isEmpty() || kelurahan.isEmpty() 
                 || kecamatan.isEmpty() || kabupaten.isEmpty() 
                 || kodePos.isEmpty() || sejarahSingkat.isEmpty() 
                 || tahunBerdiri.isEmpty() || kapasitasMasjid.isEmpty()) {
            JOptionPane.showMessageDialog(this, "Data Tidak Boleh Kosong!");
+            System.out.println("Data tidak boleh ada yang kosong!");
         }else{
+            queryInsert = "INSERT INTO m_masjid(id_m_users,nama_masjid,kapasitas_jamaah,alamat,luas_tanah,tahun_berdiri,sejarah_masjid,created_at) VALUES (?,?,?,?,?,?,?,?)";
+            try{
+            Connection conn = (Connection)Config.configDB();
+            PreparedStatement ps = conn.prepareStatement(queryInsert);
+            ps.setString(1,id);
+            ps.setString(2,namaMasjid);
+            ps.setString(3,kapasitasMasjid);
+            ps.setString(4,alamatMasjid);
+            ps.setString(5,luasTanah);
+            ps.setString(6,tahunBerdiri);
+            ps.setString(7,sejarahSingkat);
+            ps.setString(8,dateToday);
+            int rowAffected = ps.executeUpdate();
+               
             
+            JOptionPane.showMessageDialog(null, "Registrasi Berhasil!");
+            System.out.println("Update Profil Berhasil" );
+            clearForm();
+
+            
+        }catch(HeadlessException | SQLException e){
+           System.out.println("id_m_users :" + id);
+           JOptionPane.showMessageDialog(this, e.getMessage());
+                System.out.println("Error : " + e.getMessage());
+   
+                  
+        }
         }
         
         
@@ -59,6 +106,7 @@ public class ProfilMasjid extends javax.swing.JFrame {
      */
     public ProfilMasjid() {
         initComponents();
+        showData();
         clearForm();
     }
 
@@ -157,6 +205,11 @@ public class ProfilMasjid extends javax.swing.JFrame {
         jlLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_mosque_48px.png"))); // NOI18N
         jlLogo.setText("DKMNATION");
+        jlLogo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jlLogoMouseClicked(evt);
+            }
+        });
 
         jPanel7.setBackground(new java.awt.Color(7, 17, 44));
         jPanel7.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 0, 2, 0, new java.awt.Color(224, 224, 224)));
@@ -224,7 +277,7 @@ public class ProfilMasjid extends javax.swing.JFrame {
 
         jlKeluar.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jlKeluar.setForeground(new java.awt.Color(255, 255, 255));
-        jlKeluar.setText(" Keluar");
+        jlKeluar.setText("Keluar");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -256,7 +309,7 @@ public class ProfilMasjid extends javax.swing.JFrame {
                                 .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jlKeluar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jlKeluar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -301,6 +354,11 @@ public class ProfilMasjid extends javax.swing.JFrame {
         jlDashboard.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jlDashboard.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_speedometer_24px.png"))); // NOI18N
         jlDashboard.setText(" Dashboard");
+        jlDashboard.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jlDashboardMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -545,51 +603,52 @@ public class ProfilMasjid extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tfSejarahSingkat)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(jPanel4Layout.createSequentialGroup()
-                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(tfNamaMasjid, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel4))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(tfLuasTanah, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel6)))
-                                .addComponent(jLabel5)
-                                .addComponent(tfAlamat))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(tfKelurahan, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel12))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(tfKecamatan, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel9))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(tfKabupaten, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel11))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel10)
-                                    .addComponent(tfKodePos, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jLabel7)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(tfTahunBerdiri, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel13))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(tfKapasitasMasjid, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel14))))
-                        .addGap(0, 2, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGap(0, 652, Short.MAX_VALUE)
                         .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(tfSejarahSingkat, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 886, Short.MAX_VALUE)
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(tfNamaMasjid, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel4))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(tfLuasTanah, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel6)))
+                                    .addComponent(jLabel5)
+                                    .addComponent(tfAlamat))
+                                .addGroup(jPanel4Layout.createSequentialGroup()
+                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(tfKelurahan, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel12))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(tfKecamatan, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel9))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(tfKabupaten, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel11))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel10)
+                                        .addComponent(tfKodePos, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jLabel7)
+                                .addGroup(jPanel4Layout.createSequentialGroup()
+                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(tfTahunBerdiri, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel13))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(tfKapasitasMasjid, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel14)))))
+                        .addGap(0, 2, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -789,6 +848,16 @@ public class ProfilMasjid extends javax.swing.JFrame {
     private void tfLuasTanahFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfLuasTanahFocusGained
         // TODO add your handling code here:
     }//GEN-LAST:event_tfLuasTanahFocusGained
+
+    private void jlDashboardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlDashboardMouseClicked
+        this.dispose();
+        dashboard.setVisible(true);
+    }//GEN-LAST:event_jlDashboardMouseClicked
+
+    private void jlLogoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlLogoMouseClicked
+        this.dispose();
+        dashboard.setVisible(true);
+    }//GEN-LAST:event_jlLogoMouseClicked
 
     /**
      * @param args the command line arguments

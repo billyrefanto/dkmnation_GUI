@@ -100,7 +100,7 @@ public class Dashboard extends javax.swing.JFrame{
         jLabel19 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
-        jlKeuangan1 = new javax.swing.JLabel();
+        jlKeluar = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jlDashboard = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
@@ -146,6 +146,11 @@ public class Dashboard extends javax.swing.JFrame{
         jlProfileMasjid.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlProfileMasjid.setForeground(new java.awt.Color(255, 255, 255));
         jlProfileMasjid.setText("       Profil Masjid");
+        jlProfileMasjid.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jlProfileMasjidMouseClicked(evt);
+            }
+        });
 
         jlDaftarInventaris.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlDaftarInventaris.setForeground(new java.awt.Color(255, 255, 255));
@@ -195,9 +200,9 @@ public class Dashboard extends javax.swing.JFrame{
         jLabel21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_drop_down_24px.png"))); // NOI18N
         jLabel21.setText("jLabel19");
 
-        jlKeuangan1.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jlKeuangan1.setForeground(new java.awt.Color(255, 255, 255));
-        jlKeuangan1.setText("Keluar");
+        jlKeluar.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jlKeluar.setForeground(new java.awt.Color(255, 255, 255));
+        jlKeluar.setText("Keluar");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -228,7 +233,7 @@ public class Dashboard extends javax.swing.JFrame{
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jlKeuangan1, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jlKeluar, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel7Layout.setVerticalGroup(
@@ -262,7 +267,7 @@ public class Dashboard extends javax.swing.JFrame{
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlDetailKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jlKeuangan1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jlKeluar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -549,6 +554,12 @@ public class Dashboard extends javax.swing.JFrame{
         // TODO add your handling code here:
     }//GEN-LAST:event_jlInventarisMouseClicked
 
+    private void jlProfileMasjidMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlProfileMasjidMouseClicked
+        ProfilMasjid profilmasjid = new ProfilMasjid();
+        this.dispose();
+        profilmasjid.setVisible(true);
+    }//GEN-LAST:event_jlProfileMasjidMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -614,9 +625,9 @@ public class Dashboard extends javax.swing.JFrame{
     private javax.swing.JLabel jlDetailKeuangan;
     private javax.swing.JLabel jlInformarmasiMasjid;
     private javax.swing.JLabel jlInventaris;
+    private javax.swing.JLabel jlKeluar;
     private javax.swing.JLabel jlKepengurusan;
     private javax.swing.JLabel jlKeuangan;
-    private javax.swing.JLabel jlKeuangan1;
     public static final javax.swing.JLabel jlNamaLengkap = new javax.swing.JLabel();
     private javax.swing.JLabel jlProfileMasjid;
     private javax.swing.JLabel jlTambahKeuangan;
