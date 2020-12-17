@@ -5,8 +5,7 @@
  */
 package view;
 
-import controller.App;
-import controller.Config;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.sql.ResultSet;
@@ -36,11 +35,10 @@ public class Dashboard extends javax.swing.JFrame{
     
     private void showData(){
         jlNamaLengkap.setText(namaLengkapData);
+        jlTanggal.setText(dateToday);
     }
 
-    private void tanggalSekarang(){
-        jlTanggal.setText(dateToday);        
-    }
+    
     
 //    private void displayNama() throws SQLException{
 //        query = "SELECT * FROM m_users";
@@ -68,7 +66,6 @@ public class Dashboard extends javax.swing.JFrame{
      */
     public Dashboard() {
         initComponents();
-        tanggalSekarang();
         showData();
         
     }
@@ -186,6 +183,11 @@ public class Dashboard extends javax.swing.JFrame{
         jlTambahPengurus.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlTambahPengurus.setForeground(new java.awt.Color(255, 255, 255));
         jlTambahPengurus.setText("       Tambah Pengurus");
+        jlTambahPengurus.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jlTambahPengurusMouseClicked(evt);
+            }
+        });
 
         jlTambahKeuangan.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlTambahKeuangan.setForeground(new java.awt.Color(255, 255, 255));
@@ -203,6 +205,11 @@ public class Dashboard extends javax.swing.JFrame{
         jlKeluar.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jlKeluar.setForeground(new java.awt.Color(255, 255, 255));
         jlKeluar.setText("Keluar");
+        jlKeluar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jlKeluarMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -559,6 +566,15 @@ public class Dashboard extends javax.swing.JFrame{
         this.dispose();
         profilmasjid.setVisible(true);
     }//GEN-LAST:event_jlProfileMasjidMouseClicked
+
+    private void jlKeluarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlKeluarMouseClicked
+        System.out.println("Keluar");
+        System.exit(0);
+    }//GEN-LAST:event_jlKeluarMouseClicked
+
+    private void jlTambahPengurusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlTambahPengurusMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jlTambahPengurusMouseClicked
 
     /**
      * @param args the command line arguments

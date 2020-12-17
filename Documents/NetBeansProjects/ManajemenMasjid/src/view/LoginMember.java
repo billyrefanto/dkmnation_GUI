@@ -19,8 +19,10 @@ import javax.swing.JOptionPane;
  * @author Moch Billy Refanto
  */
 public class LoginMember extends javax.swing.JFrame {
-    static String username,password,query,validasiUsername, usernameData,passwordData,namaLengkapData,queryShow,id;
-    private void clearForm(){
+
+    static String username, password, query, validasiUsername, usernameData, passwordData, namaLengkapData, queryShow, idLogin,idMasjid, queryMasjid;
+
+    private void clearForm() {
         tfUsername.setText(null);
         tpPassword.setText(null);
     }
@@ -29,57 +31,69 @@ public class LoginMember extends javax.swing.JFrame {
         return namaLengkapData;
     }
 
-    public static String getId() {
-        return id;
+    public static String getIdLogin() {
+        return idLogin;
+    }
+
+    public static String getIdMasjid() {
+        return idMasjid;
     }
     
     
-    
-    
-    private void loginMember() throws SQLException{
+
+    private void loginMember() throws SQLException {
         username = tfUsername.getText().trim();
         password = String.valueOf(tpPassword.getPassword());
         validasiUsername = username.toLowerCase();
-        query = "SELECT * FROM m_users WHERE username = '"+username+"' and password = '"+password+"'";
-        
-        try{
+        query = "SELECT * FROM m_users WHERE username = '" + username + "' and password = '" + password + "'";
+
+        try {
             if (validasiUsername.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Username / Password Tidak Boleh Kosong!");
-            System.out.println("Username / Password Tidak Boleh Kosong!");
-            }else{
-                Connection conn = (Connection)Config.configDB();
+                System.out.println("Username / Password Tidak Boleh Kosong!");
+                JOptionPane.showMessageDialog(null, "Username / Password Tidak Boleh Kosong!");
+            } else {
+                Connection conn = (Connection) Config.configDB();
                 Statement statement = conn.createStatement();
-                ResultSet res = statement.executeQuery(query);  
-                
-                while(res.next()){
+                ResultSet res = statement.executeQuery(query);
+
+                while (res.next()) {
                     usernameData = res.getString("username");
                     passwordData = res.getString("password");
                     System.out.println("Berhasil Login!");
-                    
+
                     //query untuk ambil data berdasarkan username, ketika login berhasil
-                    queryShow = "SELECT * FROM m_users WHERE username = '"+usernameData+"'";
-                    
+                    queryShow = "SELECT * FROM m_users WHERE username = '" + usernameData + "'";
+
                     //get m_users
                     namaLengkapData = res.getString("nama_lengkap");
-                    id = res.getString("id");
+                    idLogin = res.getString("id");
                     System.out.println(
-                            "ID m_users : " + id
-                            + "\nNama       : " + namaLengkapData);
+                            "ID m_users  : " + idLogin
+                            + "\nNama        : " + namaLengkapData);
                     
+                    //query untuk ambil data m_masjid berdasarkan username, ketika login berhasil
+                    queryMasjid = "SELECT * FROM m_masjid WHERE username = '" + idLogin + "'";
 
-                    
+                    //get data m_masjid
+                    idMasjid = res.getString("id");
+                    System.out.println(
+                            "ID m_masjid : " + idLogin);
+
                 }
                 if (!validasiUsername.equals(usernameData) || !password.equals(passwordData)) {
-                    JOptionPane.showMessageDialog(null, "Username / Password Salah!");
                     System.out.println("Username / Password Salah!");
-                }else{
+                    JOptionPane.showMessageDialog(null, "Username / Password Salah!");
+
+                } else {
+                    JOptionPane.showMessageDialog(this,"Login Berhasil!");
                     Dashboard dashboard = new Dashboard();
                     this.dispose();
                     dashboard.setVisible(true);
                 }
             }
-            
-        }catch(SQLException e){
+
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getMessage());
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
@@ -115,7 +129,7 @@ public class LoginMember extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1000, 700));
 
-        tpPassword.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        tpPassword.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         tpPassword.setMargin(new java.awt.Insets(5, 5, 5, 5));
         tpPassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -127,7 +141,7 @@ public class LoginMember extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Masuk");
 
-        tfUsername.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        tfUsername.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         tfUsername.setMargin(new java.awt.Insets(5, 5, 5, 5));
         tfUsername.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -240,7 +254,7 @@ public class LoginMember extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tfUsernameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfUsernameFocusGained
-       
+
     }//GEN-LAST:event_tfUsernameFocusGained
 
     private void tfUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfUsernameActionPerformed
@@ -256,9 +270,9 @@ public class LoginMember extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void jlRegistrasiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlRegistrasiMouseClicked
-      Register reg = new Register();
-       this.dispose();
-       reg.setVisible(true);
+        Register reg = new Register();
+        this.dispose();
+        reg.setVisible(true);
     }//GEN-LAST:event_jlRegistrasiMouseClicked
 
     private void tpPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tpPasswordActionPerformed
@@ -298,6 +312,7 @@ public class LoginMember extends javax.swing.JFrame {
                 new LoginMember().setVisible(true);
             }
         });
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -13,8 +13,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.awt.HeadlessException;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.ResultSet;
 
-import static view.LoginMember.id;
+import static view.LoginMember.idLogin;
 import static view.LoginMember.namaLengkapData;
 
 /**
@@ -22,15 +24,18 @@ import static view.LoginMember.namaLengkapData;
  * @author Moch Billy Refanto
  */
 public class ProfilMasjid extends javax.swing.JFrame {
+
     Dashboard dashboard = new Dashboard();
-    
+
+
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     LocalDateTime now = LocalDateTime.now();
     String dateToday = dateTimeFormatter.format(now);
-    
-    static String namaMasjid,luasTanah,alamatMasjid,kelurahan,kecamatan,kabupaten,kodePos,sejarahSingkat,tahunBerdiri,kapasitasMasjid,queryInsert,queryShow,idLogin;
-    
-    private void clearForm(){
+
+    static String luasTanah, alamatMasjid, kelurahan, kecamatan, kabupaten, kodePos, sejarahSingkat, tahunBerdiri, kapasitasMasjid, queryInsert, queryShow;
+    String namaMasjid = "";
+
+    private void clearForm() {
         tfNamaMasjid.setText("");
         tfLuasTanah.setText("");
         tfAlamat.setText("");
@@ -42,13 +47,16 @@ public class ProfilMasjid extends javax.swing.JFrame {
         tfTahunBerdiri.setText("");
         tfKapasitasMasjid.setText("");
     }
+
     
-    private void showData(){
+
+    private void showData() {
         jlNamaLengkap.setText(namaLengkapData);
         jlTanggal.setText(dateToday);
+
     }
-    
-    private void addProfilMasjid(){
+
+    private void addProfilMasjid() {
         namaMasjid = tfNamaMasjid.getText();
         luasTanah = tfLuasTanah.getText();
         alamatMasjid = tfAlamat.getText();
@@ -59,47 +67,94 @@ public class ProfilMasjid extends javax.swing.JFrame {
         sejarahSingkat = tfSejarahSingkat.getText();
         tahunBerdiri = tfTahunBerdiri.getText();
         kapasitasMasjid = tfKapasitasMasjid.getText();
-        
-        if (namaMasjid.isEmpty() || luasTanah.isEmpty() 
-                || alamatMasjid.isEmpty() || kelurahan.isEmpty() 
-                || kecamatan.isEmpty() || kabupaten.isEmpty() 
-                || kodePos.isEmpty() || sejarahSingkat.isEmpty() 
-                || tahunBerdiri.isEmpty() || kapasitasMasjid.isEmpty()) {
-           JOptionPane.showMessageDialog(this, "Data Tidak Boleh Kosong!");
-            System.out.println("Data tidak boleh ada yang kosong!");
-        }else{
-            queryInsert = "INSERT INTO m_masjid(id_m_users,nama_masjid,kapasitas_jamaah,alamat,luas_tanah,tahun_berdiri,sejarah_masjid,created_at) VALUES (?,?,?,?,?,?,?,?)";
-            try{
-            Connection conn = (Connection)Config.configDB();
-            PreparedStatement ps = conn.prepareStatement(queryInsert);
-            ps.setString(1,id);
-            ps.setString(2,namaMasjid);
-            ps.setString(3,kapasitasMasjid);
-            ps.setString(4,alamatMasjid);
-            ps.setString(5,luasTanah);
-            ps.setString(6,tahunBerdiri);
-            ps.setString(7,sejarahSingkat);
-            ps.setString(8,dateToday);
-            int rowAffected = ps.executeUpdate();
-               
-            
-            JOptionPane.showMessageDialog(null, "Registrasi Berhasil!");
-            System.out.println("Update Profil Berhasil" );
-            clearForm();
 
-            
-        }catch(HeadlessException | SQLException e){
-           System.out.println("id_m_users :" + id);
-           JOptionPane.showMessageDialog(this, e.getMessage());
+        if (namaMasjid.isEmpty() || luasTanah.isEmpty()
+                || alamatMasjid.isEmpty() || kelurahan.isEmpty()
+                || kecamatan.isEmpty() || kabupaten.isEmpty()
+                || kodePos.isEmpty() || sejarahSingkat.isEmpty()
+                || tahunBerdiri.isEmpty() || kapasitasMasjid.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Data Tidak Boleh Kosong!");
+            System.out.println("Data tidak boleh ada yang kosong!");
+        } else {
+            queryInsert = "INSERT INTO m_masjid(id_m_users,nama_masjid,kapasitas_jamaah,alamat,kelurahan,kecamatan,kabupaten,kode_pos,luas_tanah,tahun_berdiri,sejarah_masjid,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+            try {
+                Connection conn = (Connection) Config.configDB();
+                PreparedStatement ps = conn.prepareStatement(queryInsert);
+                ps.setString(1, idLogin);
+                ps.setString(2, namaMasjid);
+                ps.setString(3, kapasitasMasjid);
+                ps.setString(4, alamatMasjid);
+                ps.setString(5, kelurahan);
+                ps.setString(6, kecamatan);
+                ps.setString(7, kabupaten);
+                ps.setString(8, kodePos);
+                ps.setString(9, luasTanah);
+                ps.setString(10, tahunBerdiri);
+                ps.setString(11, sejarahSingkat);
+                ps.setString(12, dateToday);
+                int rowAffected = ps.executeUpdate();
+
+                JOptionPane.showMessageDialog(null, "Registrasi Berhasil!");
+                System.out.println("Update Profil Berhasil");
+//                clearForm();
+
+            } catch (HeadlessException | SQLException e) {
+                System.out.println("id_m_users :" + idLogin);
+                JOptionPane.showMessageDialog(this, e.getMessage());
                 System.out.println("Error : " + e.getMessage());
-   
-                  
+
+            }
         }
-        }
-        
-        
+
     }
     
+    private void cekData() {
+        queryShow = "SELECT * FROM m_masjid WHERE id = '" + idLogin + "'";
+        
+        try {
+            String idMasjidData, namaMasjidData, luasTanahData, alamatMasjidData, kelurahanData, kecamatanData, kabupatenData, kodePosData, sejarahSingkatData, tahunBerdiriData, kapasitasMasjidData;
+            Connection conn = (Connection) Config.configDB();
+            Statement statement = conn.createStatement();
+            ResultSet res = statement.executeQuery(queryShow);
+            while (res.next()) {
+                idMasjidData = res.getString("id");
+                namaMasjidData = res.getString("nama_masjid");
+                kapasitasMasjidData = res.getString("kapasitas_jamaah");
+                alamatMasjidData = res.getString("alamat");
+                kelurahanData = res.getString("kelurahan");
+                kecamatanData = res.getString("kecamatan");
+                kabupatenData = res.getString("kabupaten");
+                kodePosData = res.getString("kode_pos");
+                luasTanahData = res.getString("luas_tanah");
+                tahunBerdiriData = res.getString("tahun_berdiri");
+                sejarahSingkatData = res.getString("sejarah_masjid");
+
+                tfNamaMasjid.setText(namaMasjidData);
+                tfLuasTanah.setText(luasTanahData);
+                tfAlamat.setText(alamatMasjidData);
+                tfKelurahan.setText(kelurahanData);
+                tfKecamatan.setText(kecamatanData);
+                tfKabupaten.setText(kabupatenData);
+                tfKodePos.setText(kodePosData);
+                tfSejarahSingkat.setText(sejarahSingkatData);
+                tfTahunBerdiri.setText(tahunBerdiriData);
+                tfKapasitasMasjid.setText(kapasitasMasjidData);
+
+                System.out.println("id_m_masjid " + idMasjidData + " Luas tanah "+ luasTanahData + alamatMasjidData + kelurahanData + sejarahSingkatData);
+
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+        String cekNamaMasjid = tfNamaMasjid.getText();
+        if (cekNamaMasjid.isEmpty()) {
+            addProfilMasjid();
+        } else {
+
+        }
+
+    }
 
     /**
      * Creates new form ProfilMasjid
@@ -107,7 +162,8 @@ public class ProfilMasjid extends javax.swing.JFrame {
     public ProfilMasjid() {
         initComponents();
         showData();
-        clearForm();
+        cekData();
+//        clearForm();
     }
 
     /**
@@ -226,6 +282,11 @@ public class ProfilMasjid extends javax.swing.JFrame {
         jlProfileMasjid.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlProfileMasjid.setForeground(new java.awt.Color(255, 255, 255));
         jlProfileMasjid.setText("       Profil Masjid");
+        jlProfileMasjid.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jlProfileMasjidMouseClicked(evt);
+            }
+        });
 
         jlDaftarInventaris.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlDaftarInventaris.setForeground(new java.awt.Color(255, 255, 255));
@@ -261,6 +322,11 @@ public class ProfilMasjid extends javax.swing.JFrame {
         jlTambahPengurus.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlTambahPengurus.setForeground(new java.awt.Color(255, 255, 255));
         jlTambahPengurus.setText("       Tambah Pengurus");
+        jlTambahPengurus.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jlTambahPengurusMouseClicked(evt);
+            }
+        });
 
         jlTambahKeuangan.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlTambahKeuangan.setForeground(new java.awt.Color(255, 255, 255));
@@ -278,6 +344,11 @@ public class ProfilMasjid extends javax.swing.JFrame {
         jlKeluar.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jlKeluar.setForeground(new java.awt.Color(255, 255, 255));
         jlKeluar.setText("Keluar");
+        jlKeluar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jlKeluarMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -602,15 +673,10 @@ public class ProfilMasjid extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addGap(0, 652, Short.MAX_VALUE)
-                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(tfSejarahSingkat, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 886, Short.MAX_VALUE)
+                            .addComponent(tfSejarahSingkat, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(jPanel4Layout.createSequentialGroup()
@@ -648,7 +714,12 @@ public class ProfilMasjid extends javax.swing.JFrame {
                                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(tfKapasitasMasjid, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel14)))))
-                        .addGap(0, 2, Short.MAX_VALUE)))
+                        .addGap(0, 2, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -859,6 +930,19 @@ public class ProfilMasjid extends javax.swing.JFrame {
         dashboard.setVisible(true);
     }//GEN-LAST:event_jlLogoMouseClicked
 
+    private void jlKeluarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlKeluarMouseClicked
+        System.out.println("Keluar");
+        System.exit(0);
+    }//GEN-LAST:event_jlKeluarMouseClicked
+
+    private void jlTambahPengurusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlTambahPengurusMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jlTambahPengurusMouseClicked
+
+    private void jlProfileMasjidMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlProfileMasjidMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jlProfileMasjidMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -885,7 +969,7 @@ public class ProfilMasjid extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(ProfilMasjid.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         //</editor-fold>
 
         /* Create and display the form */

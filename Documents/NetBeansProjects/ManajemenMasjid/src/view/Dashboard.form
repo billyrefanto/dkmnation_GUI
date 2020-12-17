@@ -359,6 +359,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="       Tambah Pengurus"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jlTambahPengurusMouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jlTambahKeuangan">
               <Properties>
@@ -405,6 +408,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Keluar"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jlKeluarMouseClicked"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
