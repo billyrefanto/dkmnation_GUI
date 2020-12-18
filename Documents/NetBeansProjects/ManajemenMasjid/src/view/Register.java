@@ -58,7 +58,7 @@ public class Register extends javax.swing.JFrame {
 //    }
     private void registrasiAkun() throws SQLException {
         namaLengkap = tfNamaLengkap.getText();
-        username = tfUsername.getText().trim().toLowerCase();
+        username = tfUsername.getText().trim();
         email = tfEmail.getText().trim();
         password = String.valueOf(tpPassword.getPassword());
         konfirmasiPassword = String.valueOf(tpKonfirmasiPassword.getPassword());
@@ -66,7 +66,7 @@ public class Register extends javax.swing.JFrame {
         kontak = tfKontak.getText();
         alamat = taAlamat.getText();
         validasiUsername = username.toLowerCase();
-        
+
         //valisasi jika text field kosong maka tidak boleh insert data
         if (namaLengkap.isEmpty()
                 || validasiUsername.isEmpty() || email.isEmpty()
@@ -75,11 +75,6 @@ public class Register extends javax.swing.JFrame {
                 || kontak.isEmpty() || alamat.isEmpty()) {
             System.out.println("Silahkan isi semua data!");
             JOptionPane.showMessageDialog(null, "Silahkan isi semua data!");
-        } 
-        //validasi jika password dan konfirmasi password tidak sama
-        else if (!password.equals(konfirmasiPassword)) {
-            JOptionPane.showMessageDialog(null, "Password tidak sama!");
-            System.out.println("Password tidak sama!");
         } else {
             queryReg = "INSERT INTO m_users(nama_lengkap,username,email,password,jenis_kelamin,kontak,alamat,level_user,created_at) VALUES (?,?,?,?,?,?,?,?,?)";
             queryInsertMasjid = "INSERT INTO m_masjid (id_m_users,created_at) VALUES (?,?)";
@@ -88,13 +83,13 @@ public class Register extends javax.swing.JFrame {
                 Connection conn = (Connection) Config.configDB();
                 Statement statement = conn.createStatement();
                 ResultSet res = statement.executeQuery(queryShowData);
-                
+
                 //mengambil data username & email dari tabel m_users
                 while (res.next()) {
                     usernameData = res.getString("username");
                     emailData = res.getString("email");
                 }
-                
+
                 //validasi jika usernam & email sudah terdaftar maka tidak boleh mengunakannya lagi
                 if (validasiUsername.equals(usernameData)) {
                     System.out.println("Username sudah terdaftar");
@@ -102,6 +97,10 @@ public class Register extends javax.swing.JFrame {
                 } else if (email.equals(emailData)) {
                     System.out.println("Email Sudah terdaftar!");
                     JOptionPane.showMessageDialog(null, "Email Sudah terdaftar!");
+                    //validasi jika password dan konfirmasi password tidak sama
+                } else if (!password.equals(konfirmasiPassword)) {
+                    JOptionPane.showMessageDialog(null, "Password tidak sama!");
+                    System.out.println("Password tidak sama!");
                 } else {
                     PreparedStatement ps = conn.prepareStatement(queryReg);
                     ps.setString(1, namaLengkap);
@@ -119,15 +118,15 @@ public class Register extends javax.swing.JFrame {
                     System.out.println("Registrasi Berhasil! "
                             + "\nUsername : " + validasiUsername
                     );
-                    
+
                     //mengambil data data id dari tabel m_users berdasarkan username
                     queryShow = "SELECT * FROM m_users WHERE username = '" + validasiUsername + "'";
                     res = statement.executeQuery(queryShow);
-                    
+
                     while (res.next()) {
                         idData = res.getString("id");
                     }
-                    
+
                     //Insert data pada tabel m_masjid untuk membuat masjid dengan parent id_m_users.
                     PreparedStatement ps2 = conn.prepareStatement(queryInsertMasjid);
                     ps2.setString(1, idData);
@@ -199,7 +198,7 @@ public class Register extends javax.swing.JFrame {
         jLabel1.setText("Registrasi Akun");
 
         tfNamaLengkap.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        tfNamaLengkap.setMargin(new java.awt.Insets(5, 5, 5, 5));
+        tfNamaLengkap.setMargin(new java.awt.Insets(3, 3, 3, 3));
         tfNamaLengkap.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tfNamaLengkapFocusGained(evt);
@@ -232,7 +231,7 @@ public class Register extends javax.swing.JFrame {
         jLabel7.setText("Email Akrif");
 
         tfEmail.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        tfEmail.setMargin(new java.awt.Insets(5, 5, 5, 5));
+        tfEmail.setMargin(new java.awt.Insets(3, 3, 3, 3));
         tfEmail.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tfEmailFocusGained(evt);
@@ -245,7 +244,7 @@ public class Register extends javax.swing.JFrame {
         });
 
         tfUsername.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        tfUsername.setMargin(new java.awt.Insets(5, 5, 5, 5));
+        tfUsername.setMargin(new java.awt.Insets(3, 3, 3, 3));
         tfUsername.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tfUsernameFocusGained(evt);
@@ -270,7 +269,7 @@ public class Register extends javax.swing.JFrame {
         jLabel11.setText("Kontak");
 
         tfKontak.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        tfKontak.setMargin(new java.awt.Insets(5, 5, 5, 5));
+        tfKontak.setMargin(new java.awt.Insets(3, 3, 3, 3));
         tfKontak.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tfKontakFocusGained(evt);
@@ -291,10 +290,10 @@ public class Register extends javax.swing.JFrame {
         cbSyarat.setLabel("saya mengisi data dengan benar dan setuju dengan \nsyarat & ketentuan yang berlaku");
 
         tpPassword.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        tpPassword.setMargin(new java.awt.Insets(5, 5, 5, 5));
+        tpPassword.setMargin(new java.awt.Insets(3, 3, 3, 3));
 
         tpKonfirmasiPassword.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        tpKonfirmasiPassword.setMargin(new java.awt.Insets(5, 5, 5, 5));
+        tpKonfirmasiPassword.setMargin(new java.awt.Insets(3, 3, 3, 3));
 
         taAlamat.setColumns(20);
         taAlamat.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
@@ -372,8 +371,8 @@ public class Register extends javax.swing.JFrame {
                     .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfNamaLengkap, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfNamaLengkap, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -406,7 +405,7 @@ public class Register extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(labelLogin))
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(7, 17, 44));

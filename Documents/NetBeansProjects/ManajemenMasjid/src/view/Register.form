@@ -124,8 +124,8 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="tfNamaLengkap" alignment="3" min="-2" pref="33" max="-2" attributes="0"/>
-                      <Component id="tfUsername" alignment="3" min="-2" pref="33" max="-2" attributes="0"/>
+                      <Component id="tfNamaLengkap" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                      <Component id="tfUsername" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
@@ -164,7 +164,7 @@
                       <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="labelLogin" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="41" max="32767" attributes="0"/>
+                  <EmptySpace pref="39" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -185,7 +185,7 @@
               <Font name="Times New Roman" size="14" style="0"/>
             </Property>
             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-              <Insets value="[5, 5, 5, 5]"/>
+              <Insets value="[3, 3, 3, 3]"/>
             </Property>
           </Properties>
           <Events>
@@ -241,7 +241,7 @@
               <Font name="Times New Roman" size="14" style="0"/>
             </Property>
             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-              <Insets value="[5, 5, 5, 5]"/>
+              <Insets value="[3, 3, 3, 3]"/>
             </Property>
           </Properties>
           <Events>
@@ -255,7 +255,7 @@
               <Font name="Times New Roman" size="14" style="0"/>
             </Property>
             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-              <Insets value="[5, 5, 5, 5]"/>
+              <Insets value="[3, 3, 3, 3]"/>
             </Property>
           </Properties>
           <Events>
@@ -301,7 +301,7 @@
               <Font name="Times New Roman" size="14" style="0"/>
             </Property>
             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-              <Insets value="[5, 5, 5, 5]"/>
+              <Insets value="[3, 3, 3, 3]"/>
             </Property>
           </Properties>
           <Events>
@@ -344,7 +344,7 @@
               <Font name="Times New Roman" size="14" style="0"/>
             </Property>
             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-              <Insets value="[5, 5, 5, 5]"/>
+              <Insets value="[3, 3, 3, 3]"/>
             </Property>
           </Properties>
         </Component>
@@ -354,7 +354,7 @@
               <Font name="Times New Roman" size="14" style="0"/>
             </Property>
             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-              <Insets value="[5, 5, 5, 5]"/>
+              <Insets value="[3, 3, 3, 3]"/>
             </Property>
           </Properties>
         </Component>

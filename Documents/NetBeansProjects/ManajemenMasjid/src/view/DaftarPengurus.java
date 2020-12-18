@@ -7,7 +7,7 @@ package view;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import static view.LoginMember.idMasjid;
+import static view.Dashboard.idMasjid;
 import static view.LoginMember.namaLengkapData;
 
 /**

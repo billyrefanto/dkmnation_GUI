@@ -13,7 +13,7 @@ import static view.LoginMember.namaLengkapData;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import static view.LoginMember.idMasjid;
+import static view.Dashboard.idMasjid;
 
 /**
  *

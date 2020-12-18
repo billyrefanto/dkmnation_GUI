@@ -15,6 +15,7 @@ import java.awt.HeadlessException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import static view.Dashboard.idMasjid;
 
 import static view.LoginMember.idLogin;
 import static view.LoginMember.namaLengkapData;
@@ -27,12 +28,12 @@ public class ProfilMasjid extends javax.swing.JFrame {
 
     Dashboard dashboard = new Dashboard();
 
-
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     LocalDateTime now = LocalDateTime.now();
     String dateToday = dateTimeFormatter.format(now);
 
-    static String luasTanah, alamatMasjid, kelurahan, kecamatan, kabupaten, kodePos, sejarahSingkat, tahunBerdiri, kapasitasMasjid, queryInsert, queryShow;
+    static String luasTanah, alamatMasjid, kelurahan, kecamatan, kabupaten, kodePos, sejarahSingkat, tahunBerdiri, kapasitasMasjid, queryUpdate, queryShow;
+    static String idMasjidData, namaMasjidData, luasTanahData, alamatMasjidData, kelurahanData, kecamatanData, kabupatenData, kodePosData, sejarahSingkatData, tahunBerdiriData, kapasitasMasjidData;
     String namaMasjid = "";
 
     private void clearForm() {
@@ -49,13 +50,6 @@ public class ProfilMasjid extends javax.swing.JFrame {
     }
 
     
-
-    private void showData() {
-        jlNamaLengkap.setText(namaLengkapData);
-        jlTanggal.setText(dateToday);
-
-    }
-
     private void addProfilMasjid() {
         namaMasjid = tfNamaMasjid.getText();
         luasTanah = tfLuasTanah.getText();
@@ -73,33 +67,34 @@ public class ProfilMasjid extends javax.swing.JFrame {
                 || kecamatan.isEmpty() || kabupaten.isEmpty()
                 || kodePos.isEmpty() || sejarahSingkat.isEmpty()
                 || tahunBerdiri.isEmpty() || kapasitasMasjid.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Data Tidak Boleh Kosong!");
+            JOptionPane.showMessageDialog(this, "Update Informasi Masjid!");
             System.out.println("Data tidak boleh ada yang kosong!");
         } else {
-            queryInsert = "INSERT INTO m_masjid(id_m_users,nama_masjid,kapasitas_jamaah,alamat,kelurahan,kecamatan,kabupaten,kode_pos,luas_tanah,tahun_berdiri,sejarah_masjid,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+//            queryInsert = "INSERT INTO m_masjid(id_m_users,nama_masjid,kapasitas_jamaah,alamat,kelurahan,kecamatan,kabupaten,kode_pos,luas_tanah,tahun_berdiri,sejarah_masjid,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+            queryUpdate = "UPDATE m_masjid SET nama_masjid =?,kapasitas_jamaah=?,alamat=?,kelurahan=?,kecamatan=?,kabupaten=?,kode_pos=?,luas_tanah=?,tahun_berdiri=?,sejarah_masjid=?,updated_at=? WHERE id = '" + idMasjid + "' ";
             try {
                 Connection conn = (Connection) Config.configDB();
-                PreparedStatement ps = conn.prepareStatement(queryInsert);
-                ps.setString(1, idLogin);
-                ps.setString(2, namaMasjid);
-                ps.setString(3, kapasitasMasjid);
-                ps.setString(4, alamatMasjid);
-                ps.setString(5, kelurahan);
-                ps.setString(6, kecamatan);
-                ps.setString(7, kabupaten);
-                ps.setString(8, kodePos);
-                ps.setString(9, luasTanah);
-                ps.setString(10, tahunBerdiri);
-                ps.setString(11, sejarahSingkat);
-                ps.setString(12, dateToday);
+                PreparedStatement ps = conn.prepareStatement(queryUpdate);
+                ps.setString(1, namaMasjid);
+                ps.setString(2, kapasitasMasjid);
+                ps.setString(3, alamatMasjid);
+                ps.setString(4, kelurahan);
+                ps.setString(5, kecamatan);
+                ps.setString(6, kabupaten);
+                ps.setString(7, kodePos);
+                ps.setString(8, luasTanah);
+                ps.setString(9, tahunBerdiri);
+                ps.setString(10, sejarahSingkat);
+                ps.setString(11, dateToday);
                 int rowAffected = ps.executeUpdate();
 
-                JOptionPane.showMessageDialog(null, "Registrasi Berhasil!");
+                JOptionPane.showMessageDialog(null, "Berhasil Update Informasi Masjid!");
                 System.out.println("Update Profil Berhasil");
 //                clearForm();
 
             } catch (HeadlessException | SQLException e) {
                 System.out.println("id_m_users :" + idLogin);
+                System.out.println("id_m_masjid : " + idMasjid);
                 JOptionPane.showMessageDialog(this, e.getMessage());
                 System.out.println("Error : " + e.getMessage());
 
@@ -107,17 +102,16 @@ public class ProfilMasjid extends javax.swing.JFrame {
         }
 
     }
-    
+
     private void cekData() {
-        queryShow = "SELECT * FROM m_masjid WHERE id = '" + idLogin + "'";
-        
+        queryShow = "SELECT * FROM m_masjid WHERE id = '" + idMasjid + "'";
+
         try {
-            String idMasjidData, namaMasjidData, luasTanahData, alamatMasjidData, kelurahanData, kecamatanData, kabupatenData, kodePosData, sejarahSingkatData, tahunBerdiriData, kapasitasMasjidData;
+//            String idMasjidData, namaMasjidData, luasTanahData, alamatMasjidData, kelurahanData, kecamatanData, kabupatenData, kodePosData, sejarahSingkatData, tahunBerdiriData, kapasitasMasjidData;
             Connection conn = (Connection) Config.configDB();
             Statement statement = conn.createStatement();
             ResultSet res = statement.executeQuery(queryShow);
             while (res.next()) {
-                idMasjidData = res.getString("id");
                 namaMasjidData = res.getString("nama_masjid");
                 kapasitasMasjidData = res.getString("kapasitas_jamaah");
                 alamatMasjidData = res.getString("alamat");
@@ -129,19 +123,18 @@ public class ProfilMasjid extends javax.swing.JFrame {
                 tahunBerdiriData = res.getString("tahun_berdiri");
                 sejarahSingkatData = res.getString("sejarah_masjid");
 
-                tfNamaMasjid.setText(namaMasjidData);
-                tfLuasTanah.setText(luasTanahData);
-                tfAlamat.setText(alamatMasjidData);
-                tfKelurahan.setText(kelurahanData);
-                tfKecamatan.setText(kecamatanData);
-                tfKabupaten.setText(kabupatenData);
-                tfKodePos.setText(kodePosData);
-                tfSejarahSingkat.setText(sejarahSingkatData);
-                tfTahunBerdiri.setText(tahunBerdiriData);
-                tfKapasitasMasjid.setText(kapasitasMasjidData);
-
-                System.out.println("id_m_masjid " + idMasjidData + " Luas tanah "+ luasTanahData + alamatMasjidData + kelurahanData + sejarahSingkatData);
-
+//                tfNamaMasjid.setText(namaMasjidData);
+//                tfLuasTanah.setText(luasTanahData);
+//                tfAlamat.setText(alamatMasjidData);
+//                tfKelurahan.setText(kelurahanData);
+//                tfKecamatan.setText(kecamatanData);
+//                tfKabupaten.setText(kabupatenData);
+//                tfKodePos.setText(kodePosData);
+//                tfSejarahSingkat.setText(sejarahSingkatData);
+//                tfTahunBerdiri.setText(tahunBerdiriData);
+//                tfKapasitasMasjid.setText(kapasitasMasjidData);
+//
+//                System.out.println("id_m_masjid " + idMasjid + " Luas tanah " + luasTanahData + alamatMasjidData + kelurahanData + sejarahSingkatData);
             }
 
         } catch (SQLException e) {
@@ -153,6 +146,68 @@ public class ProfilMasjid extends javax.swing.JFrame {
         } else {
 
         }
+
+    }
+
+    public static String getNamaMasjidData() {
+        return namaMasjidData;
+    }
+
+    public static String getLuasTanahData() {
+        return luasTanahData;
+    }
+
+    public static String getAlamatMasjidData() {
+        return alamatMasjidData;
+    }
+
+    public static String getKelurahanData() {
+        return kelurahanData;
+    }
+
+    public static String getKecamatanData() {
+        return kecamatanData;
+    }
+
+    public static String getKabupatenData() {
+        return kabupatenData;
+    }
+
+    public static String getKodePosData() {
+        return kodePosData;
+    }
+
+    public static String getSejarahSingkatData() {
+        return sejarahSingkatData;
+    }
+
+    public static String getTahunBerdiriData() {
+        return tahunBerdiriData;
+    }
+
+    public static String getKapasitasMasjidData() {
+        return kapasitasMasjidData;
+    }
+
+   
+    
+    
+    private void showData() {
+        jlNamaLengkap.setText(namaLengkapData);
+        jlTanggal.setText(dateToday);
+
+        tfNamaMasjid.setText(namaMasjidData);
+        tfLuasTanah.setText(luasTanahData);
+        tfAlamat.setText(alamatMasjidData);
+        tfKelurahan.setText(kelurahanData);
+        tfKecamatan.setText(kecamatanData);
+        tfKabupaten.setText(kabupatenData);
+        tfKodePos.setText(kodePosData);
+        tfSejarahSingkat.setText(sejarahSingkatData);
+        tfTahunBerdiri.setText(tahunBerdiriData);
+        tfKapasitasMasjid.setText(kapasitasMasjidData);
+
+        System.out.println("id_m_masjid " + idMasjid + " Luas tanah " + luasTanahData + alamatMasjidData + kelurahanData + sejarahSingkatData);
 
     }
 

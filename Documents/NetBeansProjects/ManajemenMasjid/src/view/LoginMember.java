@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
  */
 public class LoginMember extends javax.swing.JFrame {
 
-    static String username, password, query, validasiUsername, usernameData, passwordData, namaLengkapData, queryShow, idLogin,idMasjid, queryMasjid;
+    static String username, password, query, validasiUsername, usernameData, passwordData, namaLengkapData, queryShow, idLogin, queryMasjid;
 
     private void clearForm() {
         tfUsername.setText(null);
@@ -35,11 +35,9 @@ public class LoginMember extends javax.swing.JFrame {
         return idLogin;
     }
 
-    public static String getIdMasjid() {
-        return idMasjid;
-    }
-    
-    
+//    public static String getIdMasjid() {
+//        return idMasjid;
+//    }
 
     private void loginMember() throws SQLException {
         username = tfUsername.getText().trim();
@@ -55,6 +53,7 @@ public class LoginMember extends javax.swing.JFrame {
                 Connection conn = (Connection) Config.configDB();
                 Statement statement = conn.createStatement();
                 ResultSet res = statement.executeQuery(query);
+                
 
                 while (res.next()) {
                     usernameData = res.getString("username");
@@ -71,13 +70,12 @@ public class LoginMember extends javax.swing.JFrame {
                             "ID m_users  : " + idLogin
                             + "\nNama        : " + namaLengkapData);
                     
-                    //query untuk ambil data m_masjid berdasarkan username, ketika login berhasil
-                    queryMasjid = "SELECT * FROM m_masjid WHERE username = '" + usernameData + "'";
-
-                    //get data m_masjid
-                    idMasjid = res.getString("id");
-                    System.out.println(
-                            "ID m_masjid : " + idMasjid);
+                    //query untuk ambil data m_masjid berdasarkan id, ketika login berhasil
+//                    queryMasjid = "SELECT * FROM m_masjid WHERE id_m_users = '" + idLogin + "'";
+//                    //get data m_masjid
+//                    idMasjid = res.getString("id");
+//                    System.out.println(
+//                            "ID m_masjid : " + idMasjid);
 
                 }
                 if (!validasiUsername.equals(usernameData) || !password.equals(passwordData)) {
@@ -85,7 +83,7 @@ public class LoginMember extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "Username / Password Salah!");
 
                 } else {
-                    JOptionPane.showMessageDialog(this,"Login Berhasil!");
+                    JOptionPane.showMessageDialog(this, "Login Berhasil!");
                     Dashboard dashboard = new Dashboard();
                     this.dispose();
                     dashboard.setVisible(true);
@@ -97,6 +95,23 @@ public class LoginMember extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
+
+//    private void showMasjid() throws SQLException {
+//        Connection conn = (Connection) Config.configDB();
+//        Statement statement = conn.createStatement();
+//        ResultSet res = statement.executeQuery(queryMasjid);
+//        try {
+//            queryMasjid = "SELECT * FROM m_masjid WHERE id_m_users = '" + idLogin + "'";
+//            while (res.next()) {
+//                idMasjid = res.getString("id");
+//                System.out.println(
+//                        "ID m_masjid : " + idMasjid);
+//            }
+//        } catch (SQLException e) {
+//            System.out.println("Error " + e.getMessage());
+//            JOptionPane.showMessageDialog(this, e.getMessage());
+//        }
+//    }
 
     /**
      * Creates new form LoginMember
