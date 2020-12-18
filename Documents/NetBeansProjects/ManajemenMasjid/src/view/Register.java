@@ -13,19 +13,23 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Moch Billy Refanto
  */
 public class Register extends javax.swing.JFrame {
-    static String namaLengkap,username,email,password,konfirmasiPassword,jenisKelamin,kontak,alamat,queryReg,validasiUsername;
+
+    static String namaLengkap, username, email, password, konfirmasiPassword, jenisKelamin, kontak, alamat, queryReg, validasiUsername, queryShow, usernameData, emailData, idData, queryInsertMasjid, queryShowData;
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     LocalDateTime now = LocalDateTime.now();
     String dateToday = dateTimeFormatter.format(now);
-    
 
-    private void cleanForm(){
+    private void cleanForm() {
         tfNamaLengkap.setText(null);
         tfUsername.setText(null);
         tfEmail.setText(null);
@@ -34,10 +38,25 @@ public class Register extends javax.swing.JFrame {
         tfEmail.setText(null);
         tpPassword.setText(null);
         tpKonfirmasiPassword.setText(null);
-        
+
     }
-    
-    private void registrasiAkun(){
+
+//    private void showData() throws SQLException {
+//
+//        try {
+//            ResultSet res = statement.executeQuery(queryShow);
+//            while (res.next()) {
+//                usernameData = res.getString("username");
+//                emailData = res.getString("email");
+//                idData = res.getString("id");
+//            }
+//        } catch (SQLException e) {
+//            System.out.println("Error " + e.getMessage());
+//            JOptionPane.showMessageDialog(this, e.getMessage());
+//        }
+//
+//    }
+    private void registrasiAkun() throws SQLException {
         namaLengkap = tfNamaLengkap.getText();
         username = tfUsername.getText().trim().toLowerCase();
         email = tfEmail.getText().trim();
@@ -48,44 +67,84 @@ public class Register extends javax.swing.JFrame {
         alamat = taAlamat.getText();
         validasiUsername = username.toLowerCase();
         
-        if (namaLengkap.isEmpty() 
-                || validasiUsername.isEmpty() || email.isEmpty() 
-                || password.isEmpty() ||password.isEmpty() 
+        //valisasi jika text field kosong maka tidak boleh insert data
+        if (namaLengkap.isEmpty()
+                || validasiUsername.isEmpty() || email.isEmpty()
+                || password.isEmpty() || password.isEmpty()
                 || konfirmasiPassword.isEmpty() || jenisKelamin.isEmpty()
                 || kontak.isEmpty() || alamat.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Silahkan isi semua data!");
             System.out.println("Silahkan isi semua data!");
-        }else if(!password.equals(konfirmasiPassword)){
+            JOptionPane.showMessageDialog(null, "Silahkan isi semua data!");
+        } 
+        //validasi jika password dan konfirmasi password tidak sama
+        else if (!password.equals(konfirmasiPassword)) {
             JOptionPane.showMessageDialog(null, "Password tidak sama!");
             System.out.println("Password tidak sama!");
-        }else{
+        } else {
             queryReg = "INSERT INTO m_users(nama_lengkap,username,email,password,jenis_kelamin,kontak,alamat,level_user,created_at) VALUES (?,?,?,?,?,?,?,?,?)";
-            try{
-            Connection conn = (Connection)Config.configDB();
-            PreparedStatement ps = conn.prepareStatement(queryReg);
-            ps.setString(1,namaLengkap);
-            ps.setString(2,validasiUsername);
-            ps.setString(3,email);
-            ps.setString(4,password);
-            ps.setString(5,jenisKelamin);
-            ps.setString(6,kontak);
-            ps.setString(7,alamat);
-            ps.setString(8,"Pengurus");
-            ps.setString(9,dateToday);
-            int rowAffected = ps.executeUpdate();
-               
-            
-            JOptionPane.showMessageDialog(null, "Registrasi Berhasil!");
-            System.out.println("Registrasi Berhasil! "
-                    + "\nUsername : " + validasiUsername );
-            cleanForm();
+            queryInsertMasjid = "INSERT INTO m_masjid (id_m_users,created_at) VALUES (?,?)";
+            queryShowData = "SELECT * FROM m_users";
+            try {
+                Connection conn = (Connection) Config.configDB();
+                Statement statement = conn.createStatement();
+                ResultSet res = statement.executeQuery(queryShowData);
+                
+                //mengambil data username & email dari tabel m_users
+                while (res.next()) {
+                    usernameData = res.getString("username");
+                    emailData = res.getString("email");
+                }
+                
+                //validasi jika usernam & email sudah terdaftar maka tidak boleh mengunakannya lagi
+                if (validasiUsername.equals(usernameData)) {
+                    System.out.println("Username sudah terdaftar");
+                    JOptionPane.showMessageDialog(null, "Username sudah terdaftar!");
+                } else if (email.equals(emailData)) {
+                    System.out.println("Email Sudah terdaftar!");
+                    JOptionPane.showMessageDialog(null, "Email Sudah terdaftar!");
+                } else {
+                    PreparedStatement ps = conn.prepareStatement(queryReg);
+                    ps.setString(1, namaLengkap);
+                    ps.setString(2, validasiUsername);
+                    ps.setString(3, email);
+                    ps.setString(4, password);
+                    ps.setString(5, jenisKelamin);
+                    ps.setString(6, kontak);
+                    ps.setString(7, alamat);
+                    ps.setString(8, "Pengurus");
+                    ps.setString(9, dateToday);
 
-            
-        }catch(HeadlessException | SQLException e){
-            JOptionPane.showMessageDialog(this, e.getMessage());
-                  
+                    int rowAffected = ps.executeUpdate();
+                    System.out.println("[Pesan Register]");
+                    System.out.println("Registrasi Berhasil! "
+                            + "\nUsername : " + validasiUsername
+                    );
+                    
+                    //mengambil data data id dari tabel m_users berdasarkan username
+                    queryShow = "SELECT * FROM m_users WHERE username = '" + validasiUsername + "'";
+                    res = statement.executeQuery(queryShow);
+                    
+                    while (res.next()) {
+                        idData = res.getString("id");
+                    }
+                    
+                    //Insert data pada tabel m_masjid untuk membuat masjid dengan parent id_m_users.
+                    PreparedStatement ps2 = conn.prepareStatement(queryInsertMasjid);
+                    ps2.setString(1, idData);
+                    ps2.setString(2, dateToday);
+                    rowAffected = ps2.executeUpdate();
+                    System.out.println("Berhasil membuat masjid"
+                            + "\nid_m_users : "
+                            + idData);
+                    JOptionPane.showMessageDialog(this, "Registrasi Akun Berhasil!");
+                    cleanForm();
+                }
+
+            } catch (HeadlessException | SQLException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage());
+
+            }
         }
-        }    
     }
 
     /**
@@ -392,7 +451,11 @@ public class Register extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRegistrasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrasiActionPerformed
-        registrasiAkun();
+        try {
+            registrasiAkun();
+        } catch (SQLException ex) {
+            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnRegistrasiActionPerformed
 
     private void tfEmailFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfEmailFocusGained
@@ -412,11 +475,11 @@ public class Register extends javax.swing.JFrame {
     }//GEN-LAST:event_tfUsernameActionPerformed
 
     private void tfNamaLengkapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNamaLengkapActionPerformed
-       
+
     }//GEN-LAST:event_tfNamaLengkapActionPerformed
 
     private void tfNamaLengkapFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfNamaLengkapFocusGained
-        
+
     }//GEN-LAST:event_tfNamaLengkapFocusGained
 
     private void tfKontakFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfKontakFocusGained
@@ -428,10 +491,10 @@ public class Register extends javax.swing.JFrame {
     }//GEN-LAST:event_tfKontakActionPerformed
 
     private void labelLoginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelLoginMouseClicked
-       LoginMember login = new LoginMember();
-       this.dispose();
-       login.setVisible(true);
-       
+        LoginMember login = new LoginMember();
+        this.dispose();
+        login.setVisible(true);
+
     }//GEN-LAST:event_labelLoginMouseClicked
 
     /**
