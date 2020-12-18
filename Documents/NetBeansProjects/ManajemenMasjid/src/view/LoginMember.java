@@ -72,12 +72,12 @@ public class LoginMember extends javax.swing.JFrame {
                             + "\nNama        : " + namaLengkapData);
                     
                     //query untuk ambil data m_masjid berdasarkan username, ketika login berhasil
-                    queryMasjid = "SELECT * FROM m_masjid WHERE username = '" + idLogin + "'";
+                    queryMasjid = "SELECT * FROM m_masjid WHERE username = '" + usernameData + "'";
 
                     //get data m_masjid
                     idMasjid = res.getString("id");
                     System.out.println(
-                            "ID m_masjid : " + idLogin);
+                            "ID m_masjid : " + idMasjid);
 
                 }
                 if (!validasiUsername.equals(usernameData) || !password.equals(passwordData)) {
