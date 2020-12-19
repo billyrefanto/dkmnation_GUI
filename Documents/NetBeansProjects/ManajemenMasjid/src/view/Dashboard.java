@@ -12,7 +12,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import static view.LoginMember.idLogin;
 
@@ -24,47 +23,13 @@ import static view.LoginMember.namaLengkapData;
  */
 public class Dashboard extends javax.swing.JFrame {
 
-    static String query, namaLengkap, tanggalLoca,idMasjid;
+    static String query, namaLengkap, tanggalLoca, idMasjid;
     static String idMasjidData, namaMasjidData, luasTanahData, alamatMasjidData, kelurahanData, kecamatanData, kabupatenData, kodePosData, sejarahSingkatData, tahunBerdiriData, kapasitasMasjidData;
 
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     LocalDateTime now = LocalDateTime.now();
     String dateToday = dateTimeFormatter.format(now);
-
-    private void dataMasjid() {
-        String query;
-        query = "SELECT * FROM m_masjid WHERE id_m_users = '" + idLogin + "'";
-        try {
-            Connection conn = (Connection) Config.configDB();
-            Statement statement = conn.createStatement();
-            ResultSet res = statement.executeQuery(query);
-            
-            while(res.next()){
-                idMasjid = res.getString("id");
-                namaMasjidData = res.getString("nama_masjid");
-                kapasitasMasjidData = res.getString("kapasitas_jamaah");
-                alamatMasjidData = res.getString("alamat");
-                kelurahanData = res.getString("kelurahan");
-                kecamatanData = res.getString("kecamatan");
-                kabupatenData = res.getString("kabupaten");
-                kodePosData = res.getString("kode_pos");
-                luasTanahData = res.getString("luas_tanah");
-                tahunBerdiriData = res.getString("tahun_berdiri");
-                sejarahSingkatData = res.getString("sejarah_masjid");
-                System.out.println("[Pesan Dashboard]");
-                System.out.println("id m_masjid : " + idMasjid + namaMasjidData + kapasitasMasjidData + alamatMasjidData + kelurahanData + kecamatanData + kabupatenData);
-                
-            }
-        } catch (SQLException e) {
-            System.out.println("Error " + e.getMessage());
-            JOptionPane.showMessageDialog(this, e.getMessage());
-        }
-        
-    }
-
-    public static void setIdMasjid(String idMasjid) {
-        Dashboard.idMasjid = idMasjid;
-    }
+    
 
     public static String getNamaMasjidData() {
         return namaMasjidData;
@@ -101,26 +66,53 @@ public class Dashboard extends javax.swing.JFrame {
     public static String getKapasitasMasjidData() {
         return kapasitasMasjidData;
     }
-    
-    
-    
-    private void showData() {
-        jlNamaLengkap.setText(namaLengkapData);
-        jlTanggal.setText(dateToday);
-        
-        jlNamaMasjidData.setText(namaMasjidData);
-        jlAlamatData.setText(alamatMasjidData);
-        jlAlamatData.setText(alamatMasjidData);
-        jlLuasTanah.setText(luasTanahData);
-        jlTahunBerdiri.setText(tahunBerdiriData);
-        jlSejarah.setText(sejarahSingkatData);
-    }
-    
-    
-    
-    
-    
 
+    private void dataMasjid() {
+        String query;
+        query = "SELECT * FROM m_masjid WHERE id_m_users = '" + idLogin + "'";
+        try {
+            Connection conn = (Connection) Config.configDB();
+            Statement statement = conn.createStatement();
+            ResultSet res = statement.executeQuery(query);
+
+            while (res.next()) {
+                idMasjid = res.getString("id");
+                namaMasjidData = res.getString("nama_masjid");
+                kapasitasMasjidData = res.getString("kapasitas_jamaah");
+                alamatMasjidData = res.getString("alamat");
+                kelurahanData = res.getString("kelurahan");
+                kecamatanData = res.getString("kecamatan");
+                kabupatenData = res.getString("kabupaten");
+                kodePosData = res.getString("kode_pos");
+                luasTanahData = res.getString("luas_tanah");
+                tahunBerdiriData = res.getString("tahun_berdiri");
+                sejarahSingkatData = res.getString("sejarah_masjid");
+
+                jlNamaLengkap.setText(namaLengkapData);
+                jlTanggal.setText(dateToday);
+                jlJamaahData.setText(kapasitasMasjidData + " Jamaah");
+
+                jlNamaMasjidData.setText("Selamat datang, " + namaMasjidData);
+                jlAlamatData.setText("Alamat           : " + alamatMasjidData + " Kelurahan " + kelurahanData + " Kecamatan " + kecamatanData + " Kabupaten " + kabupatenData + " Kode Pos " + kodePosData);
+                jlLuasTanah.setText("Luas tanah       : " + luasTanahData);
+                jlTahunBerdiri.setText("Tahun berdiri   : " + tahunBerdiriData);
+                jlSejarah.setText("Sejarah singkat : " + sejarahSingkatData);
+                System.out.println("[Pesan Dashboard]");
+                System.out.println("id m_masjid : " + idMasjid + namaMasjidData + kapasitasMasjidData + alamatMasjidData + kelurahanData + kecamatanData + kabupatenData);
+
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getMessage());
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+
+    }
+
+   
+
+    private void showData() {
+       System.out.println("showData id m_masjid : " + idMasjid + namaMasjidData + kapasitasMasjidData + alamatMasjidData + kelurahanData + kecamatanData + kabupatenData);
+    }
 //    private void displayNama() throws SQLException{
 //        query = "SELECT * FROM m_users";
 //        
@@ -140,7 +132,6 @@ public class Dashboard extends javax.swing.JFrame {
     public static String getNamaLengkap() {
         return namaLengkap;
     }
-    
 
     /**
      * Creates new form Dashboard
@@ -201,15 +192,10 @@ public class Dashboard extends javax.swing.JFrame {
         jlInventarisData = new javax.swing.JLabel();
         jlTanggal = new javax.swing.JLabel();
         jPanel11 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
         jlNamaMasjidData = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
         jlAlamatData = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
         jlLuasTanah = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
         jlTahunBerdiri = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
         jlSejarah = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -462,7 +448,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         jlPemasukanData.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jlPemasukanData.setForeground(new java.awt.Color(153, 153, 153));
-        jlPemasukanData.setText("Rp. 10.000.000,-");
+        jlPemasukanData.setText("Rp. 0,-");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -510,7 +496,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         jlPengeluaranData.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jlPengeluaranData.setForeground(new java.awt.Color(153, 153, 153));
-        jlPengeluaranData.setText("Rp. 10.000.000,-");
+        jlPengeluaranData.setText("Rp. 0,-");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -558,7 +544,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         jlJamaahData.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jlJamaahData.setForeground(new java.awt.Color(153, 153, 153));
-        jlJamaahData.setText("450 Orang");
+        jlJamaahData.setText("0 Jamaah");
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -606,7 +592,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         jlInventarisData.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jlInventarisData.setForeground(new java.awt.Color(153, 153, 153));
-        jlInventarisData.setText("20 Items");
+        jlInventarisData.setText("0 Items");
 
         javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
         jPanel14.setLayout(jPanel14Layout);
@@ -650,33 +636,18 @@ public class Dashboard extends javax.swing.JFrame {
 
         jPanel11.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jLabel3.setText("Selamat Datang,");
-
         jlNamaMasjidData.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jlNamaMasjidData.setText("nama masjid");
-
-        jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jLabel9.setText("Alamat");
+        jlNamaMasjidData.setText("nama masjid data");
 
         jlAlamatData.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlAlamatData.setText("alamat masjid data");
         jlAlamatData.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        jLabel11.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jLabel11.setText("Luas Tanah    : ");
-
         jlLuasTanah.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlLuasTanah.setText("luas tanah data");
 
-        jLabel13.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jLabel13.setText("Tahun Berdiri : ");
-
         jlTahunBerdiri.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlTahunBerdiri.setText("tahun berdiri data");
-
-        jLabel15.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jLabel15.setText("Sejarah");
 
         jlSejarah.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlSejarah.setText("sejarah masjid data");
@@ -689,48 +660,24 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jlNamaMasjidData, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jlAlamatData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jlSejarah, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jlNamaMasjidData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jlLuasTanah, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jlTahunBerdiri, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(jlLuasTanah, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jlTahunBerdiri, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jlNamaMasjidData))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel9)
+                .addComponent(jlNamaMasjidData)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlAlamatData, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11)
-                    .addComponent(jlLuasTanah))
+                .addComponent(jlLuasTanah)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel13)
-                    .addComponent(jlTahunBerdiri))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel15)
+                .addComponent(jlTahunBerdiri)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlSejarah, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -844,20 +791,15 @@ public class Dashboard extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;

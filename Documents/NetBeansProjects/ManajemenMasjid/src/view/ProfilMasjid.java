@@ -123,18 +123,18 @@ public class ProfilMasjid extends javax.swing.JFrame {
                 tahunBerdiriData = res.getString("tahun_berdiri");
                 sejarahSingkatData = res.getString("sejarah_masjid");
 
-//                tfNamaMasjid.setText(namaMasjidData);
-//                tfLuasTanah.setText(luasTanahData);
-//                tfAlamat.setText(alamatMasjidData);
-//                tfKelurahan.setText(kelurahanData);
-//                tfKecamatan.setText(kecamatanData);
-//                tfKabupaten.setText(kabupatenData);
-//                tfKodePos.setText(kodePosData);
-//                tfSejarahSingkat.setText(sejarahSingkatData);
-//                tfTahunBerdiri.setText(tahunBerdiriData);
-//                tfKapasitasMasjid.setText(kapasitasMasjidData);
-//
-//                System.out.println("id_m_masjid " + idMasjid + " Luas tanah " + luasTanahData + alamatMasjidData + kelurahanData + sejarahSingkatData);
+                tfNamaMasjid.setText(namaMasjidData);
+                tfLuasTanah.setText(luasTanahData);
+                tfAlamat.setText(alamatMasjidData);
+                tfKelurahan.setText(kelurahanData);
+                tfKecamatan.setText(kecamatanData);
+                tfKabupaten.setText(kabupatenData);
+                tfKodePos.setText(kodePosData);
+                tfSejarahSingkat.setText(sejarahSingkatData);
+                tfTahunBerdiri.setText(tahunBerdiriData);
+                tfKapasitasMasjid.setText(kapasitasMasjidData);
+                System.out.println("[Pesan Profil Masjid cekData()]");
+                System.out.println("id_m_masjid " + idMasjid + " Luas tanah " + luasTanahData + alamatMasjidData + kelurahanData + sejarahSingkatData);
             }
 
         } catch (SQLException e) {
@@ -192,31 +192,31 @@ public class ProfilMasjid extends javax.swing.JFrame {
    
     
     
-    private void showData() {
-        jlNamaLengkap.setText(namaLengkapData);
-        jlTanggal.setText(dateToday);
-
-        tfNamaMasjid.setText(namaMasjidData);
-        tfLuasTanah.setText(luasTanahData);
-        tfAlamat.setText(alamatMasjidData);
-        tfKelurahan.setText(kelurahanData);
-        tfKecamatan.setText(kecamatanData);
-        tfKabupaten.setText(kabupatenData);
-        tfKodePos.setText(kodePosData);
-        tfSejarahSingkat.setText(sejarahSingkatData);
-        tfTahunBerdiri.setText(tahunBerdiriData);
-        tfKapasitasMasjid.setText(kapasitasMasjidData);
-
-        System.out.println("id_m_masjid " + idMasjid + " Luas tanah " + luasTanahData + alamatMasjidData + kelurahanData + sejarahSingkatData);
-
-    }
+//    private void showData() {
+//        jlNamaLengkap.setText(namaLengkapData);
+//        jlTanggal.setText(dateToday);
+//
+//        tfNamaMasjid.setText(namaMasjidData);
+//        tfLuasTanah.setText(luasTanahData);
+//        tfAlamat.setText(alamatMasjidData);
+//        tfKelurahan.setText(kelurahanData);
+//        tfKecamatan.setText(kecamatanData);
+//        tfKabupaten.setText(kabupatenData);
+//        tfKodePos.setText(kodePosData);
+//        tfSejarahSingkat.setText(sejarahSingkatData);
+//        tfTahunBerdiri.setText(tahunBerdiriData);
+//        tfKapasitasMasjid.setText(kapasitasMasjidData);
+//
+//        System.out.println("showData() id_m_masjid " + idMasjid + " Luas tanah " + luasTanahData + alamatMasjidData + kelurahanData + sejarahSingkatData);
+//
+//    }
 
     /**
      * Creates new form ProfilMasjid
      */
     public ProfilMasjid() {
         initComponents();
-        showData();
+//        showData();
         cekData();
 //        clearForm();
     }
