@@ -23,13 +23,12 @@ import static view.LoginMember.namaLengkapData;
  */
 public class Dashboard extends javax.swing.JFrame {
 
-    static String query, namaLengkap, tanggalLoca, idMasjid;
+    static String query, namaLengkap, tanggalLoca, idMasjid,pemasukanData,pengeluaranData;
     static String idMasjidData, namaMasjidData, luasTanahData, alamatMasjidData, kelurahanData, kecamatanData, kabupatenData, kodePosData, sejarahSingkatData, tahunBerdiriData, kapasitasMasjidData;
 
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     LocalDateTime now = LocalDateTime.now();
     String dateToday = dateTimeFormatter.format(now);
-    
 
     public static String getNamaMasjidData() {
         return namaMasjidData;
@@ -107,11 +106,37 @@ public class Dashboard extends javax.swing.JFrame {
         }
 
     }
+    
+    private void dataKeuangan() {
+        String queryPemasukan, queryPengeluaran;
+        queryPemasukan = "SELECT SUM(nominal) AS nominal FROM m_masjid WHERE m_keuangan = '" + idMasjid + "' and kategori = Pemasukan";
+        queryPengeluaran = "SELECT SUM(nominal) AS nominal FROM m_masjid WHERE m_keuangan = '" + idMasjid + "' and kategori = Pengeluaran";
+        try {
+            Connection conn = (Connection) Config.configDB();
+            Statement statement = conn.createStatement();
+            ResultSet res = statement.executeQuery(queryPemasukan);
 
-   
+            while (res.next()) {
+                pemasukanData = res.getString("nominal");
+                
+                jlPemasukanData.setText("pemasukanData");
+
+            }
+            ResultSet res2 = statement.executeQuery(queryPemasukan);
+            while(res.next()){
+                pengeluaranData = res.getString("nominal");
+                jlPengeluaranData.setText("pemasukanData");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getMessage());
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+
+    }
+    
 
     private void showData() {
-       System.out.println("showData id m_masjid : " + idMasjid + namaMasjidData + kapasitasMasjidData + alamatMasjidData + kelurahanData + kecamatanData + kabupatenData);
+        System.out.println("showData id m_masjid : " + idMasjid + namaMasjidData + kapasitasMasjidData + alamatMasjidData + kelurahanData + kecamatanData + kabupatenData);
     }
 //    private void displayNama() throws SQLException{
 //        query = "SELECT * FROM m_users";
@@ -129,6 +154,7 @@ public class Dashboard extends javax.swing.JFrame {
 //        }
 //        
 //    }
+
     public static String getNamaLengkap() {
         return namaLengkap;
     }
@@ -140,6 +166,7 @@ public class Dashboard extends javax.swing.JFrame {
         initComponents();
         showData();
         dataMasjid();
+        dataKeuangan();
 
     }
 
@@ -235,6 +262,11 @@ public class Dashboard extends javax.swing.JFrame {
         jlDaftarInventaris.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlDaftarInventaris.setForeground(new java.awt.Color(255, 255, 255));
         jlDaftarInventaris.setText("       Daftar Inventaris");
+        jlDaftarInventaris.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jlDaftarInventarisMouseClicked(evt);
+            }
+        });
 
         jlInventaris.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlInventaris.setForeground(new java.awt.Color(255, 255, 255));
@@ -253,6 +285,11 @@ public class Dashboard extends javax.swing.JFrame {
         jlDaftarPengurus.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlDaftarPengurus.setForeground(new java.awt.Color(255, 255, 255));
         jlDaftarPengurus.setText("       Daftar Pengurus");
+        jlDaftarPengurus.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jlDaftarPengurusMouseClicked(evt);
+            }
+        });
 
         jlDetailKeuangan.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlDetailKeuangan.setForeground(new java.awt.Color(255, 255, 255));
@@ -275,6 +312,11 @@ public class Dashboard extends javax.swing.JFrame {
         jlTambahKeuangan.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlTambahKeuangan.setForeground(new java.awt.Color(255, 255, 255));
         jlTambahKeuangan.setText("       Tambah Keuangan");
+        jlTambahKeuangan.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jlTambahKeuanganMouseClicked(evt);
+            }
+        });
 
         jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_drop_down_24px.png"))); // NOI18N
         jLabel19.setText("jLabel19");
@@ -322,9 +364,9 @@ public class Dashboard extends javax.swing.JFrame {
                                 .addComponent(jlInformarmasiMasjid, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jlKeluar, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -733,7 +775,9 @@ public class Dashboard extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jlInventarisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlInventarisMouseClicked
-        // TODO add your handling code here:
+        Inventaris inventaris = new Inventaris();
+        this.dispose();
+        inventaris.setVisible(true);
     }//GEN-LAST:event_jlInventarisMouseClicked
 
     private void jlProfileMasjidMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlProfileMasjidMouseClicked
@@ -752,6 +796,22 @@ public class Dashboard extends javax.swing.JFrame {
         this.dispose();
         pengurusMasjid.setVisible(true);
     }//GEN-LAST:event_jlTambahPengurusMouseClicked
+
+    private void jlDaftarPengurusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlDaftarPengurusMouseClicked
+        DaftarPengurus daftarPengurus = new DaftarPengurus();
+        this.dispose();
+        daftarPengurus.setVisible(true);
+    }//GEN-LAST:event_jlDaftarPengurusMouseClicked
+
+    private void jlDaftarInventarisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlDaftarInventarisMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jlDaftarInventarisMouseClicked
+
+    private void jlTambahKeuanganMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlTambahKeuanganMouseClicked
+       Keuangan keuangan = new Keuangan();
+       this.dispose();
+       keuangan.setVisible(true);
+    }//GEN-LAST:event_jlTambahKeuanganMouseClicked
 
     /**
      * @param args the command line arguments

@@ -83,7 +83,7 @@ public class LoginMember extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "Username / Password Salah!");
 
                 } else {
-                    JOptionPane.showMessageDialog(this, "Login Berhasil!");
+                    JOptionPane.showMessageDialog(this, "Selamat Datang " + namaLengkapData);
                     Dashboard dashboard = new Dashboard();
                     this.dispose();
                     dashboard.setVisible(true);
@@ -96,22 +96,6 @@ public class LoginMember extends javax.swing.JFrame {
         }
     }
 
-//    private void showMasjid() throws SQLException {
-//        Connection conn = (Connection) Config.configDB();
-//        Statement statement = conn.createStatement();
-//        ResultSet res = statement.executeQuery(queryMasjid);
-//        try {
-//            queryMasjid = "SELECT * FROM m_masjid WHERE id_m_users = '" + idLogin + "'";
-//            while (res.next()) {
-//                idMasjid = res.getString("id");
-//                System.out.println(
-//                        "ID m_masjid : " + idMasjid);
-//            }
-//        } catch (SQLException e) {
-//            System.out.println("Error " + e.getMessage());
-//            JOptionPane.showMessageDialog(this, e.getMessage());
-//        }
-//    }
 
     /**
      * Creates new form LoginMember

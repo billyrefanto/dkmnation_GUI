@@ -51,11 +51,6 @@ public class Pengurus extends javax.swing.JFrame {
         jenisKelamin = cbJenisKelamin.getSelectedItem().toString();
         statusAnggota = cbStatus.getSelectedItem().toString();
 
-//        if (idMasjid.isBlank()) {
-//            System.out.println("Silahkan Update Infromasi Masjid Terlebih Dulu!");
-//            JOptionPane.showMessageDialog(this, "Tidak Memiliki Masjid!");
-//        }
-//        else 
         if (namaPengurus.isEmpty() || jabatan.isEmpty()
                 || alamatLengkap.isEmpty() || kontak.isEmpty()
                 || tanggalLahir.isEmpty() || jenisKelamin.isEmpty()
@@ -87,6 +82,8 @@ public class Pengurus extends javax.swing.JFrame {
         }
 
     }
+    
+    
 
     public Pengurus() {
         initComponents();
@@ -148,7 +145,6 @@ public class Pengurus extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1237, 700));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -627,7 +623,7 @@ public class Pengurus extends javax.swing.JFrame {
                 .addGap(0, 514, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                    .addGap(0, 47, Short.MAX_VALUE)
+                    .addGap(0, 57, Short.MAX_VALUE)
                     .addComponent(tfJabatan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 

@@ -6,32 +6,24 @@
 package view;
 
 import controller.Config;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 import static view.Dashboard.idMasjid;
 import static view.LoginMember.namaLengkapData;
-import java.sql.Statement;
-import java.sql.ResultSet;
-import java.sql.Connection;
-import javax.swing.JFrame;
-import javax.swing.table.TableModel;
 
 /**
  *
  * @author Moch Billy Refanto
  */
-public class DaftarPengurus extends javax.swing.JFrame {
+public class Keuangan extends javax.swing.JFrame {
 
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     LocalDateTime now = LocalDateTime.now();
     String dateToday = dateTimeFormatter.format(now);
-
-    DefaultTableModel model;
-    
-    
 
     private void showData() {
         jlNamaLengkap.setText(namaLengkapData);
@@ -40,18 +32,55 @@ public class DaftarPengurus extends javax.swing.JFrame {
 
     }
 
-    /**
-     * Creates new form DaftarPengurus
-     */
-    public DaftarPengurus() {
-        initComponents();
-        String[] header = {"Nama Lengkap", "Jenis Kelamin", "Tanggal Lahir", "Kontak", "Alamat", "Status"};
-        model = new DefaultTableModel(header, 0);
-        tableDaftarPengurus.setModel(model);
-        dataPengurus();
+    private void addKeuangan() {
+        String kategori, keterangan, nominal, tanggal, queryInsert;
+        nominal = tfNominal.getText();
+        tanggal = tfTanggal.getText();
+        keterangan = tfKeterangan.getText();
+        kategori = cbKategori.getSelectedItem().toString();
+
+        if (nominal.isEmpty() || tanggal.isEmpty()
+                || keterangan.isEmpty() || kategori.isEmpty()) {
+            System.out.println("Tidak tidak boleh ada yang kosong!");
+            JOptionPane.showMessageDialog(this, "Data Tidak Boleh Kosong!");
+        } else {
+            queryInsert = "INSERT INTO m_keuangan (id_m_masjid,kategori,keterangan,nominal,tanggal,created_at) VALUES (?,?,?,?,?,?)";
+            try {
+                Connection conn = (Connection) Config.configDB();
+                PreparedStatement ps = conn.prepareStatement(queryInsert);
+                ps.setString(1, idMasjid);
+                ps.setString(2, kategori);
+                ps.setString(3, keterangan);
+                ps.setString(4, nominal);
+                ps.setString(5, tanggal);
+                ps.setString(6, dateToday);
+
+                int rowAffected = ps.executeUpdate();
+                System.out.println(kategori + " Berhasil Disimpan!");
+                JOptionPane.showMessageDialog(this, "Berhasil Disimpan!");
+
+                clearForm();
+            } catch (SQLException ex) {
+                System.out.println("Gagal : " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "Gagal Simpan Data!" + ex.getMessage());
+            }
+        }
+
     }
-    
-    CRUD_Pengurus crudPengurus = new CRUD_Pengurus();
+
+    private void clearForm() {
+        tfNominal.setText("");
+        tfTanggal.setText("");
+        tfKeterangan.setText("");
+
+    }
+
+    public Keuangan() {
+        initComponents();
+        showData();
+        clearForm();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -61,9 +90,7 @@ public class DaftarPengurus extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
-        jlNamaLengkap = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        jlTanggal = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jlLogo = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
@@ -84,41 +111,28 @@ public class DaftarPengurus extends javax.swing.JFrame {
         jlKeluar = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         jlDashboard = new javax.swing.JLabel();
-        jlTanggal = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jlNamaLengkap = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jPanelbg = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tableDaftarPengurus = new javax.swing.JTable();
+        tfJabatan = new javax.swing.JPanel();
+        jlNamaLengkapPengurus = new javax.swing.JLabel();
+        tfKeterangan = new javax.swing.JTextField();
+        tfNominal = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jlJabatan = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        btnReset = new java.awt.Button();
+        btnSimpan = new java.awt.Button();
+        tfTanggal = new javax.swing.JTextField();
+        cbKategori = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-
-        jlNamaLengkap.setFont(new java.awt.Font("Tekton Pro", 1, 18)); // NOI18N
-        jlNamaLengkap.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jlNamaLengkap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_arab_30px.png"))); // NOI18N
-        jlNamaLengkap.setText("Nama Lengkap");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(686, Short.MAX_VALUE)
-                .addComponent(jlNamaLengkap, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(jlNamaLengkap, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
-        );
-
-        jLabel1.setFont(new java.awt.Font("Tekton Pro", 1, 18)); // NOI18N
-        jLabel1.setText("Kepengurusan");
+        jlTanggal.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jlTanggal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jlTanggal.setText("Tanngal Sekarang");
 
         jPanel1.setBackground(new java.awt.Color(7, 17, 44));
 
@@ -333,7 +347,7 @@ public class DaftarPengurus extends javax.swing.JFrame {
                 .addComponent(jlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(76, 76, 76)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 133, Short.MAX_VALUE))
+                .addGap(0, 93, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(82, 82, 82)
@@ -341,70 +355,176 @@ public class DaftarPengurus extends javax.swing.JFrame {
                     .addContainerGap(424, Short.MAX_VALUE)))
         );
 
-        jlTanggal.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jlTanggal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jlTanggal.setText("Tanngal Sekarang");
+        jLabel1.setFont(new java.awt.Font("Tekton Pro", 1, 18)); // NOI18N
+        jLabel1.setText("Informasi Masjid");
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        jlNamaLengkap.setFont(new java.awt.Font("Tekton Pro", 1, 18)); // NOI18N
+        jlNamaLengkap.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jlNamaLengkap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_arab_30px.png"))); // NOI18N
+        jlNamaLengkap.setText("Nama Lengkap");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(684, Short.MAX_VALUE)
+                .addComponent(jlNamaLengkap, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addComponent(jlNamaLengkap, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(29, Short.MAX_VALUE))
+        );
 
         jPanel3.setBackground(new java.awt.Color(78, 115, 223));
         jPanel3.setToolTipText("");
 
-        jPanelbg.setBackground(new java.awt.Color(255, 255, 255));
-        jPanelbg.setToolTipText("");
+        tfJabatan.setBackground(new java.awt.Color(255, 255, 255));
+        tfJabatan.setToolTipText("");
 
-        tableDaftarPengurus.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        tableDaftarPengurus.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
-            },
-            new String [] {
-                "Nama Lengkap", "Jenis Kelamin", "Tanggal Lahir", "Kontak", "Alamat", "Status"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
-            };
+        jlNamaLengkapPengurus.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
+        jlNamaLengkapPengurus.setText("Nominal");
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+        tfKeterangan.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tfKeterangan.setMargin(new java.awt.Insets(3, 3, 3, 3));
+        tfKeterangan.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tfKeteranganFocusGained(evt);
             }
         });
-        tableDaftarPengurus.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableDaftarPengurusMouseClicked(evt);
+        tfKeterangan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfKeteranganActionPerformed(evt);
             }
         });
-        jScrollPane1.setViewportView(tableDaftarPengurus);
 
-        javax.swing.GroupLayout jPanelbgLayout = new javax.swing.GroupLayout(jPanelbg);
-        jPanelbg.setLayout(jPanelbgLayout);
-        jPanelbgLayout.setHorizontalGroup(
-            jPanelbgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelbgLayout.createSequentialGroup()
+        tfNominal.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tfNominal.setMargin(new java.awt.Insets(3, 3, 3, 3));
+        tfNominal.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tfNominalFocusGained(evt);
+            }
+        });
+        tfNominal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfNominalActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
+        jLabel5.setText("Keterangan");
+
+        jlJabatan.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
+        jlJabatan.setText("Kategori ");
+
+        jLabel12.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
+        jLabel12.setText("Tanggal");
+
+        btnReset.setActionCommand("Registrasi");
+        btnReset.setBackground(new java.awt.Color(244, 182, 25));
+        btnReset.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnReset.setForeground(new java.awt.Color(255, 255, 255));
+        btnReset.setLabel("Reset");
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetActionPerformed(evt);
+            }
+        });
+
+        btnSimpan.setActionCommand("Registrasi");
+        btnSimpan.setBackground(new java.awt.Color(28, 200, 138));
+        btnSimpan.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnSimpan.setForeground(new java.awt.Color(255, 255, 255));
+        btnSimpan.setLabel("Simpan");
+        btnSimpan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSimpanActionPerformed(evt);
+            }
+        });
+
+        tfTanggal.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tfTanggal.setMargin(new java.awt.Insets(3, 3, 3, 3));
+        tfTanggal.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tfTanggalFocusGained(evt);
+            }
+        });
+        tfTanggal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfTanggalActionPerformed(evt);
+            }
+        });
+
+        cbKategori.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        cbKategori.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pemasukan", "Pengeluaran" }));
+
+        javax.swing.GroupLayout tfJabatanLayout = new javax.swing.GroupLayout(tfJabatan);
+        tfJabatan.setLayout(tfJabatanLayout);
+        tfJabatanLayout.setHorizontalGroup(
+            tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tfJabatanLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 888, Short.MAX_VALUE)
+                .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tfJabatanLayout.createSequentialGroup()
+                        .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(tfKeterangan)
+                            .addGroup(tfJabatanLayout.createSequentialGroup()
+                                .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(tfNominal, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jlNamaLengkapPengurus))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jlJabatan)
+                                    .addComponent(cbKategori, 0, 436, Short.MAX_VALUE)))
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 14, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tfJabatanLayout.createSequentialGroup()
+                        .addGap(0, 660, Short.MAX_VALUE)
+                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(tfJabatanLayout.createSequentialGroup()
+                        .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+                            .addComponent(tfTanggal, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE))
+                        .addGap(449, 449, 449)))
                 .addContainerGap())
         );
-        jPanelbgLayout.setVerticalGroup(
-            jPanelbgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelbgLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(350, Short.MAX_VALUE))
+        tfJabatanLayout.setVerticalGroup(
+            tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tfJabatanLayout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jlNamaLengkapPengurus)
+                    .addComponent(jlJabatan))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tfNominal, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbKategori, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tfKeterangan, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel12)
+                .addGap(1, 1, 1)
+                .addComponent(tfTanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(174, 174, 174)
+                .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Daftar Pengurus");
+        jLabel3.setText("Iventaris");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -414,17 +534,17 @@ public class DaftarPengurus extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jPanelbg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(tfJabatan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 554, Short.MAX_VALUE))
+                .addGap(0, 514, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                    .addGap(0, 47, Short.MAX_VALUE)
-                    .addComponent(jPanelbg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGap(0, 57, Short.MAX_VALUE)
+                    .addComponent(tfJabatan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -487,29 +607,37 @@ public class DaftarPengurus extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jlDashboardMouseClicked
 
-    private void tableDaftarPengurusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableDaftarPengurusMouseClicked
-        String namaLengkapData,jenisKelaminData,tanggalLahirData,kontakData,alamatData,jabatanData,statusData;
-        int index = tableDaftarPengurus.rowAtPoint(evt.getPoint());
-        int row = tableDaftarPengurus.getSelectedRow();
-        TableModel tableModel = tableDaftarPengurus.getModel();
-        
-        
-        
-        namaLengkapData = tableDaftarPengurus.getValueAt(index, 0).toString();
-//        jenisKelaminData = tableDaftarPengurus.getValueAt(index, 1).toString();
-//        tanggalLahirData = tableDaftarPengurus.getValueAt(index, 2).toString();
-//        kontakData = tableDaftarPengurus.getValueAt(index, 3).toString();
-//        alamatData = tableDaftarPengurus.getValueAt(index, 4).toString();
-//        jabatanData = tableDaftarPengurus.getValueAt(index, 5).toString();
-//        namaLengkapData = tableDaftarPengurus.getValueAt(index, 6).toString();
-        
-        crudPengurus.setVisible(true);
-        crudPengurus.pack();
-//        crudPengurus.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        
-        crudPengurus.tfNamaPengurus.setText(namaLengkapData);
-        
-    }//GEN-LAST:event_tableDaftarPengurusMouseClicked
+    private void tfTanggalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfTanggalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfTanggalActionPerformed
+
+    private void tfTanggalFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfTanggalFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfTanggalFocusGained
+
+    private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
+        addKeuangan();
+    }//GEN-LAST:event_btnSimpanActionPerformed
+
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
+        clearForm();
+    }//GEN-LAST:event_btnResetActionPerformed
+
+    private void tfNominalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfNominalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfNominalActionPerformed
+
+    private void tfNominalFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfNominalFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfNominalFocusGained
+
+    private void tfKeteranganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfKeteranganActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfKeteranganActionPerformed
+
+    private void tfKeteranganFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfKeteranganFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfKeteranganFocusGained
 
     /**
      * @param args the command line arguments
@@ -528,81 +656,61 @@ public class DaftarPengurus extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DaftarPengurus.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Keuangan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DaftarPengurus.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Keuangan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DaftarPengurus.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Keuangan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DaftarPengurus.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Keuangan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DaftarPengurus().setVisible(true);
+                new Keuangan().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private java.awt.Button btnReset;
+    private java.awt.Button btnSimpan;
+    private javax.swing.JComboBox<String> cbKategori;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanelbg;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jlDaftarInventaris;
     private javax.swing.JLabel jlDaftarPengurus;
     private javax.swing.JLabel jlDashboard;
     private javax.swing.JLabel jlDetailKeuangan;
     private javax.swing.JLabel jlInformasiMasjid;
     private javax.swing.JLabel jlInventaris;
+    private javax.swing.JLabel jlJabatan;
     private javax.swing.JLabel jlKeluar;
     private javax.swing.JLabel jlKepengurusan;
     private javax.swing.JLabel jlKeuangan;
     private javax.swing.JLabel jlLogo;
     private javax.swing.JLabel jlNamaLengkap;
+    private javax.swing.JLabel jlNamaLengkapPengurus;
     private javax.swing.JLabel jlProfileMasjid;
     private javax.swing.JLabel jlTambahKeuangan;
     private javax.swing.JLabel jlTambahPengurus;
     private javax.swing.JLabel jlTanggal;
-    private javax.swing.JTable tableDaftarPengurus;
+    private javax.swing.JPanel tfJabatan;
+    private javax.swing.JTextField tfKeterangan;
+    private javax.swing.JTextField tfNominal;
+    private javax.swing.JTextField tfTanggal;
     // End of variables declaration//GEN-END:variables
-
-    private void dataPengurus() {
-        String query,namaLengkapData,jenisKelaminData,tanggalLahirData,kontakData,alamatData,jabatanData,statusData;
-        query = "SELECT * FROM u_pengurus WHERE id_m_masjid = '" + idMasjid + "'";
-
-        try {
-            Connection conn = (Connection) Config.configDB();
-            Statement statement = conn.createStatement();
-            ResultSet res = statement.executeQuery(query);
-            while(res.next()){
-                namaLengkapData = res.getString("nama_lengkap");
-                jenisKelaminData = res.getString("jenis_kelamin");
-                tanggalLahirData = res.getString("tanggal_lahir");
-                kontakData = res.getString("kontak");
-                alamatData = res.getString("alamat");
-                jabatanData = res.getString("jabatan");
-                statusData = res.getString("jabatan");
-                String data [] = {
-                    namaLengkapData,jenisKelaminData,tanggalLahirData,kontakData,alamatData,jabatanData,statusData
-                };
-                model.addRow(data);
-            }
-        }catch (SQLException e) {
-            System.out.println("Error " + e.getMessage());
-            JOptionPane.showMessageDialog(this, e.getMessage());
-        }
-
-    }
 }
