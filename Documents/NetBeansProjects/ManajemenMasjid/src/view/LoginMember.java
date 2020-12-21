@@ -6,6 +6,8 @@
 package view;
 
 import controller.Config;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,7 +40,6 @@ public class LoginMember extends javax.swing.JFrame {
 //    public static String getIdMasjid() {
 //        return idMasjid;
 //    }
-
     private void loginMember() throws SQLException {
         username = tfUsername.getText().trim();
         password = String.valueOf(tpPassword.getPassword());
@@ -53,7 +54,6 @@ public class LoginMember extends javax.swing.JFrame {
                 Connection conn = (Connection) Config.configDB();
                 Statement statement = conn.createStatement();
                 ResultSet res = statement.executeQuery(query);
-                
 
                 while (res.next()) {
                     usernameData = res.getString("username");
@@ -69,14 +69,13 @@ public class LoginMember extends javax.swing.JFrame {
                     System.out.println(
                             "ID m_users  : " + idLogin
                             + "\nNama        : " + namaLengkapData);
-                    
+
                     //query untuk ambil data m_masjid berdasarkan id, ketika login berhasil
 //                    queryMasjid = "SELECT * FROM m_masjid WHERE id_m_users = '" + idLogin + "'";
 //                    //get data m_masjid
 //                    idMasjid = res.getString("id");
 //                    System.out.println(
 //                            "ID m_masjid : " + idMasjid);
-
                 }
                 if (!validasiUsername.equals(usernameData) || !password.equals(passwordData)) {
                     System.out.println("Username / Password Salah!");
@@ -96,13 +95,25 @@ public class LoginMember extends javax.swing.JFrame {
         }
     }
 
-
     /**
      * Creates new form LoginMember
      */
     public LoginMember() {
         initComponents();
         clearForm();
+
+        Dimension screenSize
+                = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension frameSize = this.getSize();
+        if (frameSize.height > screenSize.height) {
+            frameSize.height = screenSize.height;
+        }
+        if (frameSize.width > screenSize.width) {
+            frameSize.width = screenSize.width;
+        }
+        this.setLocation(
+                (screenSize.width - frameSize.width) / 2,
+                (screenSize.height - frameSize.height) / 2);
     }
 
     /**

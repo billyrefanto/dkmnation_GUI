@@ -6,7 +6,9 @@
 package view;
 
 import controller.Config;
+import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -151,6 +153,19 @@ public class Register extends javax.swing.JFrame {
      */
     public Register() {
         initComponents();
+        
+         Dimension screenSize = 
+         Toolkit.getDefaultToolkit().getScreenSize();
+            Dimension frameSize = this.getSize();
+            if (frameSize.height > screenSize.height) {
+                frameSize.height = screenSize.height;
+            }
+            if (frameSize.width > screenSize.width) {
+                frameSize.width = screenSize.width;
+            }
+            this.setLocation(
+                    (screenSize.width - frameSize.width) / 2, 
+                    (screenSize.height - frameSize.height) / 2); 
     }
 
     /**

@@ -12,7 +12,12 @@ import javax.swing.JOptionPane;
 import static view.LoginMember.namaLengkapData;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+import model.DataPengurus;
 import static view.Dashboard.idMasjid;
 
 /**
@@ -21,9 +26,15 @@ import static view.Dashboard.idMasjid;
  */
 public class Pengurus extends javax.swing.JFrame {
 
+    ArrayList<DataPengurus> datapengurus = new ArrayList<>();
+
+    static String query, namaLengkapPengurusData, jenisKelaminData, tanggalLahirData, kontakData, alamatData, jabatanData, statusData;
+    static int idPengurusData;
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     LocalDateTime now = LocalDateTime.now();
     String dateToday = dateTimeFormatter.format(now);
+
+    DefaultTableModel model;
 
     private void showData() {
         jlNamaLengkap.setText(namaLengkapData);
@@ -82,13 +93,98 @@ public class Pengurus extends javax.swing.JFrame {
         }
 
     }
-    
-    
+
+    private void dataPengurus() {
+
+        query = "SELECT * FROM u_pengurus WHERE id_m_masjid = '" + idMasjid + "'";
+
+        try {
+            Connection conn = (Connection) Config.configDB();
+            Statement statement = conn.createStatement();
+            ResultSet res = statement.executeQuery(query);
+            while (res.next()) {
+                namaLengkapPengurusData = res.getString("nama_lengkap");
+                jenisKelaminData = res.getString("jenis_kelamin");
+                tanggalLahirData = res.getString("tanggal_lahir");
+                kontakData = res.getString("kontak");
+                alamatData = res.getString("alamat");
+                jabatanData = res.getString("jabatan");
+                statusData = res.getString("status");
+                idPengurusData = res.getInt("id");
+                String data[] = {
+                    namaLengkapPengurusData, jenisKelaminData, tanggalLahirData, kontakData, alamatData, jabatanData, statusData
+                };
+
+                datapengurus.add(new DataPengurus(idPengurusData, namaLengkapPengurusData, jenisKelaminData, tanggalLahirData, kontakData, alamatData, jabatanData, statusData));
+                int index = datapengurus.size() - 1;
+
+                model.addRow(new Object[]{
+                    datapengurus.get(index).getNamaPengurusData(),
+                    datapengurus.get(index).getJenisKelaminData(),
+                    datapengurus.get(index).getTanggalLahir(),
+                    datapengurus.get(index).getKontak(),
+                    datapengurus.get(index).getAlamatData(),
+                    datapengurus.get(index).getStatusData()
+
+                });
+                System.out.println("datapengurus() " + namaLengkapPengurusData + jenisKelaminData + tanggalLahirData);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getMessage());
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+
+    }
+    private void updatePengurus(){
+        String namaPengurus, jabatan, alamatLengkap, jenisKelamin, statusAnggota, kontak, tanggalLahir, queryUpdate;
+        namaPengurus = tfNamaPengurus.getText();
+        jabatan = tfJabatanPengurus.getText();
+        alamatLengkap = tfAlamatLengkap.getText();
+        kontak = tfKontakPengurus.getText();
+        tanggalLahir = tfTanggalLahir.getText();
+        jenisKelamin = cbJenisKelamin.getSelectedItem().toString();
+        statusAnggota = cbStatus.getSelectedItem().toString();
+
+        if (namaPengurus.isEmpty() || jabatan.isEmpty()
+                || alamatLengkap.isEmpty() || kontak.isEmpty()
+                || tanggalLahir.isEmpty() || jenisKelamin.isEmpty()
+                || statusAnggota.isEmpty()) {
+            System.out.println("Tidak tidak boleh ada yang kosong!");
+            JOptionPane.showMessageDialog(this, "Data Tidak Boleh Kosong!");
+        } else {
+            queryUpdate = "UPDATE u_pengurus SET nama_lengkap =?,jenis_kelamin = ?,tanggal_lahir = ?,kontak = ?,alamat = ?,jabatan = ?,status = ? ,updated_at = ? WHERE id_m_masjid = '" + idMasjid + "'";
+            try {
+                Connection conn = (Connection) Config.configDB();
+                PreparedStatement ps = conn.prepareStatement(queryUpdate);
+                ps.setString(1, namaPengurus);
+                ps.setString(2, jenisKelamin);
+                ps.setString(3, tanggalLahir);
+                ps.setString(4, kontak);
+                ps.setString(5, alamatLengkap);
+                ps.setString(6, jabatan);
+                ps.setString(7, statusAnggota);
+                ps.setString(8, dateToday);
+
+                int rowAffected = ps.executeUpdate();
+                System.out.println(namaPengurus + " Berhasil Update!");
+                JOptionPane.showMessageDialog(this, namaPengurus + " Berhasil Update!");
+            } catch (SQLException ex) {
+                System.out.println("Gagal : " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "Gagal Simpan Data!" + ex.getMessage());
+            }
+        }
+    }
 
     public Pengurus() {
         initComponents();
         showData();
         clearForm();
+
+        String[] header = {"Nama Lengkap", "Jenis Kelamin", "Tanggal Lahir", "Kontak", "Alamat", "Status"};
+        model = new DefaultTableModel(header, 0);
+        tableDaftarPengurus.setModel(model);
+
+        dataPengurus();
     }
 
     /**
@@ -142,6 +238,12 @@ public class Pengurus extends javax.swing.JFrame {
         cbStatus = new javax.swing.JComboBox<>();
         tfKontakPengurus = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
+        btnReset1 = new java.awt.Button();
+        btnSimpan1 = new java.awt.Button();
+        tfIdPengurus = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableDaftarPengurus = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -386,7 +488,7 @@ public class Pengurus extends javax.swing.JFrame {
                 .addComponent(jlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(76, 76, 76)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 93, Short.MAX_VALUE))
+                .addGap(0, 115, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(82, 82, 82)
@@ -518,6 +620,73 @@ public class Pengurus extends javax.swing.JFrame {
         jLabel15.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
         jLabel15.setText("Tanggal Lahir");
 
+        btnReset1.setActionCommand("Registrasi");
+        btnReset1.setBackground(new java.awt.Color(255, 51, 0));
+        btnReset1.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnReset1.setForeground(new java.awt.Color(255, 255, 255));
+        btnReset1.setLabel("Delete");
+        btnReset1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReset1ActionPerformed(evt);
+            }
+        });
+
+        btnSimpan1.setActionCommand("Registrasi");
+        btnSimpan1.setBackground(new java.awt.Color(0, 51, 204));
+        btnSimpan1.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnSimpan1.setForeground(new java.awt.Color(255, 255, 255));
+        btnSimpan1.setLabel("Update");
+        btnSimpan1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSimpan1ActionPerformed(evt);
+            }
+        });
+
+        tfIdPengurus.setEditable(false);
+        tfIdPengurus.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tfIdPengurus.setMargin(new java.awt.Insets(3, 3, 3, 3));
+        tfIdPengurus.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tfIdPengurusFocusGained(evt);
+            }
+        });
+        tfIdPengurus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfIdPengurusActionPerformed(evt);
+            }
+        });
+
+        jLabel10.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
+        jLabel10.setText("ID");
+
+        tableDaftarPengurus.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tableDaftarPengurus.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "Nama Lengkap", "Jenis Kelamin", "Tanggal Lahir", "Kontak", "Alamat", "Status"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tableDaftarPengurus.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableDaftarPengurusMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableDaftarPengurus);
+
         javax.swing.GroupLayout tfJabatanLayout = new javax.swing.GroupLayout(tfJabatan);
         tfJabatan.setLayout(tfJabatanLayout);
         tfJabatanLayout.setHorizontalGroup(
@@ -525,7 +694,36 @@ public class Pengurus extends javax.swing.JFrame {
             .addGroup(tfJabatanLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 888, Short.MAX_VALUE)
+                    .addGroup(tfJabatanLayout.createSequentialGroup()
+                        .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel12)
+                            .addComponent(cbJenisKelamin, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(tfJabatanLayout.createSequentialGroup()
+                                .addComponent(jLabel9)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(cbStatus, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tfJabatanLayout.createSequentialGroup()
+                        .addComponent(tfKontakPengurus)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tfTanggalLahir, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(tfJabatanLayout.createSequentialGroup()
+                        .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(tfJabatanLayout.createSequentialGroup()
+                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(tfIdPengurus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnReset1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSimpan1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(tfJabatanLayout.createSequentialGroup()
                         .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(tfJabatanLayout.createSequentialGroup()
@@ -542,26 +740,7 @@ public class Pengurus extends javax.swing.JFrame {
                                 .addComponent(jLabel7)
                                 .addGap(408, 408, 408)
                                 .addComponent(jLabel15)))
-                        .addGap(0, 2, Short.MAX_VALUE))
-                    .addGroup(tfJabatanLayout.createSequentialGroup()
-                        .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel12)
-                            .addComponent(cbJenisKelamin, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(tfJabatanLayout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(cbStatus, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tfJabatanLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tfJabatanLayout.createSequentialGroup()
-                        .addComponent(tfKontakPengurus)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfTanggalLahir, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 2, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         tfJabatanLayout.setVerticalGroup(
@@ -595,11 +774,19 @@ public class Pengurus extends javax.swing.JFrame {
                 .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tfTanggalLahir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tfKontakPengurus, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(108, 108, 108)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(tfJabatanLayout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addGap(5, 5, 5)
+                        .addComponent(tfIdPengurus, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(70, Short.MAX_VALUE))
+                    .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReset1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSimpan1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
@@ -685,7 +872,9 @@ public class Pengurus extends javax.swing.JFrame {
     }//GEN-LAST:event_jlKeluarMouseClicked
 
     private void jlDashboardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlDashboardMouseClicked
-
+        Dashboard dashboard = new Dashboard();
+        this.dispose();
+        dashboard.setVisible(true);
 
     }//GEN-LAST:event_jlDashboardMouseClicked
 
@@ -737,6 +926,70 @@ public class Pengurus extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tfKontakPengurusActionPerformed
 
+    private void btnReset1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReset1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnReset1ActionPerformed
+
+    private void btnSimpan1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpan1ActionPerformed
+        updatePengurus();
+    }//GEN-LAST:event_btnSimpan1ActionPerformed
+
+    private void tfIdPengurusFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfIdPengurusFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfIdPengurusFocusGained
+
+    private void tfIdPengurusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfIdPengurusActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfIdPengurusActionPerformed
+
+    private void tableDaftarPengurusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableDaftarPengurusMouseClicked
+
+        int i = tableDaftarPengurus.getSelectedRow();
+        int idPengurus;
+        String namaLengkapPengurus, jenisKelamin, tanggalLahir, kontak, alamat, jabatan, status;
+
+        idPengurus = datapengurus.get(i).getIdData();
+        namaLengkapPengurus = datapengurus.get(i).getNamaPengurusData();
+        jenisKelamin = datapengurus.get(i).getJenisKelaminData();
+        tanggalLahir = datapengurus.get(i).getTanggalLahir();
+        kontak = datapengurus.get(i).getKontak();
+        alamat = datapengurus.get(i).getAlamatData();
+        jabatan = datapengurus.get(i).getJabatanData();
+        status = datapengurus.get(i).getStatusData();
+
+        int jk = 0;
+        switch (jenisKelamin) {
+            case "Laki-Laki":
+                jk = 0;
+                break;
+            case "Perempuan":
+                jk = 1;
+                break;
+                
+        }
+        
+        int st = 0;
+        switch (status) {
+            case "Aktif":
+                jk = 0;
+                break;
+            case "Non-Aktif":
+                jk = 1;
+                break;
+                
+        }
+        
+        cbJenisKelamin.setSelectedIndex(jk);
+        cbStatus.setSelectedIndex(st);
+        tfIdPengurus.setText(String.valueOf(idPengurus));
+        tfNamaPengurus.setText(namaLengkapPengurus);
+        tfJabatanPengurus.setText(jabatan);
+        tfAlamatLengkap.setText(alamat);
+        tfKontakPengurus.setText(kontak);
+        tfTanggalLahir.setText(tanggalLahir);
+        
+    }//GEN-LAST:event_tableDaftarPengurusMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -774,10 +1027,13 @@ public class Pengurus extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Button btnReset;
+    private java.awt.Button btnReset1;
     private java.awt.Button btnSimpan;
+    private java.awt.Button btnSimpan1;
     private javax.swing.JComboBox<String> cbJenisKelamin;
     private javax.swing.JComboBox<String> cbStatus;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel19;
@@ -793,6 +1049,7 @@ public class Pengurus extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jlDaftarInventaris;
     private javax.swing.JLabel jlDaftarPengurus;
     private javax.swing.JLabel jlDashboard;
@@ -810,7 +1067,9 @@ public class Pengurus extends javax.swing.JFrame {
     private javax.swing.JLabel jlTambahKeuangan;
     private javax.swing.JLabel jlTambahPengurus;
     private javax.swing.JLabel jlTanggal;
+    private javax.swing.JTable tableDaftarPengurus;
     private javax.swing.JTextField tfAlamatLengkap;
+    public javax.swing.JTextField tfIdPengurus;
     private javax.swing.JPanel tfJabatan;
     private javax.swing.JTextField tfJabatanPengurus;
     private javax.swing.JTextField tfKontakPengurus;

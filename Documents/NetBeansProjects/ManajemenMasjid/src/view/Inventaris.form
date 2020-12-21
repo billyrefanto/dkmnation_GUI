@@ -541,9 +541,6 @@
             </Property>
             <Property name="text" type="java.lang.String" value="DKMNATION"/>
           </Properties>
-          <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jlLogoMouseClicked"/>
-          </Events>
         </Component>
         <Container class="javax.swing.JPanel" name="jPanel7">
           <Properties>

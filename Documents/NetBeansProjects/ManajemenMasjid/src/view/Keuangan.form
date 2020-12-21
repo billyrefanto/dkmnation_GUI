@@ -465,7 +465,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tekton Pro" size="18" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Informasi Masjid"/>
+        <Property name="text" type="java.lang.String" value="Keuangan"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel2">
@@ -764,7 +764,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Iventaris"/>
+            <Property name="text" type="java.lang.String" value="Tambah Keuangan"/>
           </Properties>
         </Component>
       </SubComponents>

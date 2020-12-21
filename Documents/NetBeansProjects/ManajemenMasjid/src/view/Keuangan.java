@@ -356,7 +356,7 @@ public class Keuangan extends javax.swing.JFrame {
         );
 
         jLabel1.setFont(new java.awt.Font("Tekton Pro", 1, 18)); // NOI18N
-        jLabel1.setText("Informasi Masjid");
+        jLabel1.setText("Keuangan");
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -524,7 +524,7 @@ public class Keuangan extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Iventaris");
+        jLabel3.setText("Tambah Keuangan");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -604,7 +604,9 @@ public class Keuangan extends javax.swing.JFrame {
     }//GEN-LAST:event_jlKeluarMouseClicked
 
     private void jlDashboardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlDashboardMouseClicked
-
+        Dashboard dashboard = new Dashboard();
+        this.dispose();
+        dashboard.setVisible(true);
     }//GEN-LAST:event_jlDashboardMouseClicked
 
     private void tfTanggalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfTanggalActionPerformed

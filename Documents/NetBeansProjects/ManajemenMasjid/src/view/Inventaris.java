@@ -21,17 +21,19 @@ import static view.LoginMember.namaLengkapData;
  */
 public class Inventaris extends javax.swing.JFrame {
 
+    Dashboard dashboard = new Dashboard();
+
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     LocalDateTime now = LocalDateTime.now();
     String dateToday = dateTimeFormatter.format(now);
-    
+
     private void showData() {
         jlNamaLengkap.setText(namaLengkapData);
         jlTanggal.setText(dateToday);
         System.out.println("Id m_masjid " + idMasjid);
 
     }
-    
+
     private void clearForm() {
         tfNamaBarang.setText("");
         tfMerek.setText("");
@@ -422,11 +424,6 @@ public class Inventaris extends javax.swing.JFrame {
         jlLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jlLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_mosque_48px.png"))); // NOI18N
         jlLogo.setText("DKMNATION");
-        jlLogo.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jlLogoMouseClicked(evt);
-            }
-        });
 
         jPanel7.setBackground(new java.awt.Color(7, 17, 44));
         jPanel7.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 0, 2, 0, new java.awt.Color(224, 224, 224)));
@@ -707,10 +704,6 @@ public class Inventaris extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnSimpanActionPerformed
 
-    private void jlLogoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlLogoMouseClicked
-        this.dispose();
-    }//GEN-LAST:event_jlLogoMouseClicked
-
     private void jlProfileMasjidMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlProfileMasjidMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_jlProfileMasjidMouseClicked
@@ -720,7 +713,9 @@ public class Inventaris extends javax.swing.JFrame {
     }//GEN-LAST:event_jlInventarisMouseClicked
 
     private void jlTambahPengurusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlTambahPengurusMouseClicked
-        // TODO add your handling code here:
+//        Pengurus pengurus = new Pengurus();
+//        this.dispose();;
+//        pengurus.setVisible(true);
     }//GEN-LAST:event_jlTambahPengurusMouseClicked
 
     private void jlKeluarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlKeluarMouseClicked
@@ -729,7 +724,10 @@ public class Inventaris extends javax.swing.JFrame {
     }//GEN-LAST:event_jlKeluarMouseClicked
 
     private void jlDashboardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlDashboardMouseClicked
+        System.out.println("Tes");
+//        this.dispose();
 
+//        dashboard.setVisible(true);
     }//GEN-LAST:event_jlDashboardMouseClicked
 
     private void tfJumlahFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfJumlahFocusGained
