@@ -12,6 +12,11 @@ import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import model.DataInventaris;
 import static view.Dashboard.idMasjid;
 import static view.LoginMember.namaLengkapData;
 
@@ -22,6 +27,8 @@ import static view.LoginMember.namaLengkapData;
 public class Inventaris extends javax.swing.JFrame {
 
     Dashboard dashboard = new Dashboard();
+    ArrayList<DataInventaris> dataInventaris = new ArrayList<>();
+    DefaultTableModel model;
 
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     LocalDateTime now = LocalDateTime.now();
@@ -84,6 +91,116 @@ public class Inventaris extends javax.swing.JFrame {
 
     }
 
+    private void dataInventaris() {
+        int idInventaris, qtyData;
+        String queryShow, namaBarang, merekBarang, keterangan, satuan, kondisi, hargaBarang;
+        queryShow = "SELECT * FROM m_inventari_masjid WHERE id_m_masjid = '" + idMasjid + "'";
+
+        try {
+            Connection conn = (Connection) Config.configDB();
+            Statement statement = conn.createStatement();
+            ResultSet res = statement.executeQuery(queryShow);
+            while (res.next()) {
+                namaBarang = res.getString("nama_barang");
+                merekBarang = res.getString("merek_barang");
+                keterangan = res.getString("keterangan");
+                satuan = res.getString("satuan");
+                kondisi = res.getString("kondisi");
+                hargaBarang = res.getString("harga_barang");
+                idInventaris = res.getInt("id");
+                qtyData = res.getInt("qty");
+                Object data[] = {
+                    idInventaris, qtyData, namaBarang, merekBarang, keterangan, satuan, kondisi, hargaBarang
+                };
+
+                dataInventaris.add(new DataInventaris(idInventaris, qtyData, namaBarang, merekBarang, keterangan, satuan, kondisi, hargaBarang));
+                int index = dataInventaris.size() - 1;
+
+                model.addRow(new Object[]{
+                    dataInventaris.get(index).getNamaBarang(),
+                    dataInventaris.get(index).getMerekBarang(),
+                    dataInventaris.get(index).getKeterangan(),
+                    dataInventaris.get(index).getQtyData(),
+                    dataInventaris.get(index).getSatuan(),
+                    dataInventaris.get(index).getKondisi(),
+                    dataInventaris.get(index).getHargaBarang()
+
+                });
+                System.out.println("dataInventaris() " + namaBarang + merekBarang + satuan);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getMessage());
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+
+    }
+
+    private void updateInventaris() {
+        int idInventaris, qtyData;
+        String queryUpdate, namaBarang, merekBarang, keterangan, satuan, kondisi, hargaBarang;
+
+        idInventaris = Integer.parseInt(tfIdInventaris.getText());
+        qtyData = Integer.parseInt(tfJumlah.getText());
+        namaBarang = tfNamaBarang.getText();
+        merekBarang = tfMerek.getText();
+        keterangan = tfKeterangan.getText();
+        satuan = cbSatuan.getSelectedItem().toString();
+        kondisi = cbKondisi.getSelectedItem().toString();
+        hargaBarang = tfHarga.getText();
+
+        if (namaBarang.isEmpty() || merekBarang.isEmpty()
+                || keterangan.isEmpty() || hargaBarang.isEmpty()
+                || kondisi.isEmpty() || satuan.isEmpty()) {
+            System.out.println("Tidak boleh ada yang kosong!");
+            JOptionPane.showMessageDialog(this, "Data Tidak Boleh Kosong!");
+        } else {
+            queryUpdate = "UPDATE m_inventari_masjid SET nama_barang =?,merek_barang =?,keterangan =?,qty =?,satuan =?,kondisi =?,harga_barang =? ,updated_at =? WHERE id = '" + idInventaris + "'";
+            try {
+                Connection conn = (Connection) Config.configDB();
+                PreparedStatement ps = conn.prepareStatement(queryUpdate);
+                ps.setString(1, namaBarang);
+                ps.setString(2, merekBarang);
+                ps.setString(3, keterangan);
+                ps.setString(4, String.valueOf(qtyData));
+                ps.setString(5, satuan);
+                ps.setString(6, kondisi);
+                ps.setString(7, hargaBarang);
+                ps.setString(8, dateToday);
+
+                int rowAffected = ps.executeUpdate();
+                System.out.println(namaBarang + " Berhasil Update!");
+                JOptionPane.showMessageDialog(this, namaBarang + " Berhasil Update!");
+            } catch (SQLException ex) {
+                System.out.println("Gagal : " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "Gagal Simpan Data!" + ex.getMessage());
+            }
+        }
+    }
+
+    private void deleteKeuangan() {
+        String idInventaris, queryDelete;
+        idInventaris = tfIdInventaris.getText();
+
+        if (idInventaris.isEmpty()) {
+            System.out.println("ID Tidak ada,Pilih Tabel Dulu!");
+            JOptionPane.showMessageDialog(this, "ID Tidak ada,Pilih Tabel Dulu!");
+        } else {
+            queryDelete = "DELETE FROM m_inventari_masjid WHERE id =?";
+            try {
+                Connection conn = (Connection) Config.configDB();
+                PreparedStatement ps = conn.prepareStatement(queryDelete);
+                ps.setString(1, idInventaris);
+
+                int rowAffected = ps.executeUpdate();
+                System.out.println(idInventaris + " Berhasil Dihapus");
+                JOptionPane.showMessageDialog(this, idInventaris + " Berhasil Dihapus");
+            } catch (SQLException ex) {
+                System.out.println("Gagal : " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "Gagal Simpan Data!" + ex.getMessage());
+            }
+        }
+    }
+
     /**
      * Creates new form Inventaris
      */
@@ -91,6 +208,12 @@ public class Inventaris extends javax.swing.JFrame {
         initComponents();
         clearForm();
         showData();
+
+        String[] header = {"Nama Lengkap", "Jenis Kelamin", "Tanggal Lahir", "Kontak", "Alamat", "Status"};
+        model = new DefaultTableModel(header, 0);
+        tableDaftarPengurus.setModel(model);
+
+        dataInventaris();
     }
 
     /**
@@ -120,6 +243,12 @@ public class Inventaris extends javax.swing.JFrame {
         cbKondisi = new javax.swing.JComboBox<>();
         tfHarga = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
+        btnDelete = new java.awt.Button();
+        btnUpdate = new java.awt.Button();
+        tfIdInventaris = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableDaftarPengurus = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jlNamaLengkap = new javax.swing.JLabel();
@@ -130,11 +259,8 @@ public class Inventaris extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jlKeuangan = new javax.swing.JLabel();
         jlProfileMasjid = new javax.swing.JLabel();
-        jlDaftarInventaris = new javax.swing.JLabel();
         jlInventaris = new javax.swing.JLabel();
         jlInformasiMasjid = new javax.swing.JLabel();
-        jlDaftarPengurus = new javax.swing.JLabel();
-        jlDetailKeuangan = new javax.swing.JLabel();
         jlKepengurusan = new javax.swing.JLabel();
         jlTambahPengurus = new javax.swing.JLabel();
         jlTambahKeuangan = new javax.swing.JLabel();
@@ -278,6 +404,73 @@ public class Inventaris extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
         jLabel10.setText("Harga");
 
+        btnDelete.setActionCommand("Registrasi");
+        btnDelete.setBackground(new java.awt.Color(255, 51, 0));
+        btnDelete.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnDelete.setForeground(new java.awt.Color(255, 255, 255));
+        btnDelete.setLabel("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        btnUpdate.setActionCommand("Registrasi");
+        btnUpdate.setBackground(new java.awt.Color(0, 51, 204));
+        btnUpdate.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
+        btnUpdate.setLabel("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+
+        tfIdInventaris.setEditable(false);
+        tfIdInventaris.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tfIdInventaris.setMargin(new java.awt.Insets(3, 3, 3, 3));
+        tfIdInventaris.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tfIdInventarisFocusGained(evt);
+            }
+        });
+        tfIdInventaris.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfIdInventarisActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
+        jLabel11.setText("ID");
+
+        tableDaftarPengurus.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tableDaftarPengurus.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Nama Barang", "Merek", "Keterangan", "Qty", "Satuan", "Kondisi", "Harga"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tableDaftarPengurus.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableDaftarPengurusMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableDaftarPengurus);
+
         javax.swing.GroupLayout tfJabatanLayout = new javax.swing.GroupLayout(tfJabatan);
         tfJabatan.setLayout(tfJabatanLayout);
         tfJabatanLayout.setHorizontalGroup(
@@ -285,24 +478,6 @@ public class Inventaris extends javax.swing.JFrame {
             .addGroup(tfJabatanLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tfJabatanLayout.createSequentialGroup()
-                        .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(tfJabatanLayout.createSequentialGroup()
-                                    .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(tfNamaBarang, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jlNamaLengkapPengurus))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(tfMerek, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jlJabatan)))
-                                .addComponent(jLabel5)
-                                .addComponent(tfKeterangan))
-                            .addGroup(tfJabatanLayout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addGap(404, 404, 404)
-                                .addComponent(jLabel10)))
-                        .addGap(0, 2, Short.MAX_VALUE))
                     .addGroup(tfJabatanLayout.createSequentialGroup()
                         .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(tfJabatanLayout.createSequentialGroup()
@@ -317,14 +492,42 @@ public class Inventaris extends javax.swing.JFrame {
                                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 383, Short.MAX_VALUE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tfJabatanLayout.createSequentialGroup()
-                        .addGap(0, 448, Short.MAX_VALUE)
+                        .addComponent(cbKondisi, 0, 442, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfHarga, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(tfJabatanLayout.createSequentialGroup()
+                        .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(tfKeterangan)
+                                .addComponent(jLabel5)
+                                .addGroup(tfJabatanLayout.createSequentialGroup()
+                                    .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(tfNamaBarang, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jlNamaLengkapPengurus))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jlJabatan)
+                                        .addComponent(tfMerek, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(tfJabatanLayout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(410, 410, 410)
+                                .addComponent(jLabel10)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(tfJabatanLayout.createSequentialGroup()
+                        .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(tfJabatanLayout.createSequentialGroup()
+                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(tfIdInventaris, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tfJabatanLayout.createSequentialGroup()
-                        .addComponent(cbKondisi, 0, 442, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfHarga, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 888, Short.MAX_VALUE))
                 .addContainerGap())
         );
         tfJabatanLayout.setVerticalGroup(
@@ -358,11 +561,19 @@ public class Inventaris extends javax.swing.JFrame {
                 .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbKondisi, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tfHarga, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(108, 108, 108)
-                .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(70, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel11)
+                .addGap(5, 5, 5)
+                .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tfIdInventaris, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
@@ -402,7 +613,7 @@ public class Inventaris extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(684, Short.MAX_VALUE)
+                .addContainerGap(688, Short.MAX_VALUE)
                 .addComponent(jlNamaLengkap, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(25, 25, 25))
         );
@@ -446,10 +657,6 @@ public class Inventaris extends javax.swing.JFrame {
             }
         });
 
-        jlDaftarInventaris.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jlDaftarInventaris.setForeground(new java.awt.Color(255, 255, 255));
-        jlDaftarInventaris.setText("       Daftar Inventaris");
-
         jlInventaris.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlInventaris.setForeground(new java.awt.Color(255, 255, 255));
         jlInventaris.setText("       Inventaris");
@@ -463,14 +670,6 @@ public class Inventaris extends javax.swing.JFrame {
         jlInformasiMasjid.setForeground(new java.awt.Color(255, 255, 255));
         jlInformasiMasjid.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_moon_star_24px.png"))); // NOI18N
         jlInformasiMasjid.setText("Informasi Masjid");
-
-        jlDaftarPengurus.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jlDaftarPengurus.setForeground(new java.awt.Color(255, 255, 255));
-        jlDaftarPengurus.setText("       Daftar Pengurus");
-
-        jlDetailKeuangan.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jlDetailKeuangan.setForeground(new java.awt.Color(255, 255, 255));
-        jlDetailKeuangan.setText("       Detail Keuangan");
 
         jlKepengurusan.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jlKepengurusan.setForeground(new java.awt.Color(255, 255, 255));
@@ -489,6 +688,11 @@ public class Inventaris extends javax.swing.JFrame {
         jlTambahKeuangan.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlTambahKeuangan.setForeground(new java.awt.Color(255, 255, 255));
         jlTambahKeuangan.setText("       Tambah Keuangan");
+        jlTambahKeuangan.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jlTambahKeuanganMouseClicked(evt);
+            }
+        });
 
         jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_drop_down_24px.png"))); // NOI18N
         jLabel19.setText("jLabel19");
@@ -515,13 +719,11 @@ public class Inventaris extends javax.swing.JFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jlDaftarPengurus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jlDaftarInventaris, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jlInventaris, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jlProfileMasjid, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jlKeluar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jlTambahPengurus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jlDetailKeuangan, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel7Layout.createSequentialGroup()
@@ -529,16 +731,15 @@ public class Inventaris extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jlKepengurusan, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addComponent(jlInformasiMasjid, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jlKeluar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jlKepengurusan, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -553,15 +754,11 @@ public class Inventaris extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlInventaris, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlDaftarInventaris, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jlKepengurusan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel19))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlTambahPengurus, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlDaftarPengurus, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jlKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -569,10 +766,8 @@ public class Inventaris extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlDetailKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlKeluar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(131, Short.MAX_VALUE))
         );
 
         jPanel8.setBackground(new java.awt.Color(7, 17, 44));
@@ -705,7 +900,9 @@ public class Inventaris extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSimpanActionPerformed
 
     private void jlProfileMasjidMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlProfileMasjidMouseClicked
-        // TODO add your handling code here:
+        ProfilMasjid profilmasjid = new ProfilMasjid();
+        this.dispose();
+        profilmasjid.setVisible(true);
     }//GEN-LAST:event_jlProfileMasjidMouseClicked
 
     private void jlInventarisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlInventarisMouseClicked
@@ -713,9 +910,9 @@ public class Inventaris extends javax.swing.JFrame {
     }//GEN-LAST:event_jlInventarisMouseClicked
 
     private void jlTambahPengurusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlTambahPengurusMouseClicked
-//        Pengurus pengurus = new Pengurus();
-//        this.dispose();;
-//        pengurus.setVisible(true);
+        Pengurus pengurus = new Pengurus();
+        this.dispose();;
+        pengurus.setVisible(true);
     }//GEN-LAST:event_jlTambahPengurusMouseClicked
 
     private void jlKeluarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlKeluarMouseClicked
@@ -754,6 +951,84 @@ public class Inventaris extends javax.swing.JFrame {
         clearForm();
     }//GEN-LAST:event_btnResetMouseClicked
 
+    private void jlTambahKeuanganMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlTambahKeuanganMouseClicked
+        Keuangan keuangan = new Keuangan();
+        this.dispose();
+        keuangan.setVisible(true);
+    }//GEN-LAST:event_jlTambahKeuanganMouseClicked
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        deleteKeuangan();
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        updateInventaris();
+        clearForm();
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void tfIdInventarisFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfIdInventarisFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfIdInventarisFocusGained
+
+    private void tfIdInventarisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfIdInventarisActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfIdInventarisActionPerformed
+
+    private void tableDaftarPengurusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableDaftarPengurusMouseClicked
+
+        int i = tableDaftarPengurus.getSelectedRow();
+        int idInventaris, qtyData;
+        String namaBarang, merekBarang, keterangan, satuan, kondisi, hargaBarang;
+
+        idInventaris = dataInventaris.get(i).getIdInventaris();
+        qtyData = dataInventaris.get(i).getQtyData();
+        namaBarang = dataInventaris.get(i).getNamaBarang();
+        merekBarang = dataInventaris.get(i).getMerekBarang();
+        keterangan = dataInventaris.get(i).getKeterangan();
+        satuan = dataInventaris.get(i).getSatuan();
+        kondisi = dataInventaris.get(i).getKondisi();
+        hargaBarang = dataInventaris.get(i).getHargaBarang();
+
+        int satuanCb = 0;
+        switch (satuan) {
+            case "Unit":
+                satuanCb = 0;
+                break;
+            case "Items":
+                satuanCb = 1;
+                break;
+            case "Pcs":
+                satuanCb = 2;
+                break;
+        }
+
+        int kondisiCb = 0;
+        switch (kondisi) {
+            case "Normal":
+                kondisiCb = 0;
+                break;
+            case "Baru":
+                kondisiCb = 1;
+                break;
+            case "Bekas":
+                kondisiCb = 2;
+                break;
+            case "Rusak":
+                kondisiCb = 3;
+                break;
+        }
+
+        cbKondisi.setSelectedIndex(kondisiCb);
+        cbSatuan.setSelectedIndex(satuanCb);
+        tfIdInventaris.setText(String.valueOf(tfIdInventaris));
+        tfNamaBarang.setText(namaBarang);
+        tfMerek.setText(merekBarang);
+        tfKeterangan.setText(keterangan);
+        tfJumlah.setText(String.valueOf(qtyData));
+        tfHarga.setText(hargaBarang);
+
+    }//GEN-LAST:event_tableDaftarPengurusMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -790,12 +1065,15 @@ public class Inventaris extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private java.awt.Button btnDelete;
     private java.awt.Button btnReset;
     private java.awt.Button btnSimpan;
+    private java.awt.Button btnUpdate;
     private javax.swing.JComboBox<String> cbKondisi;
     private javax.swing.JComboBox<String> cbSatuan;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel20;
@@ -810,10 +1088,8 @@ public class Inventaris extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
-    private javax.swing.JLabel jlDaftarInventaris;
-    private javax.swing.JLabel jlDaftarPengurus;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jlDashboard;
-    private javax.swing.JLabel jlDetailKeuangan;
     private javax.swing.JLabel jlInformasiMasjid;
     private javax.swing.JLabel jlInventaris;
     private javax.swing.JLabel jlJabatan;
@@ -827,7 +1103,9 @@ public class Inventaris extends javax.swing.JFrame {
     private javax.swing.JLabel jlTambahKeuangan;
     private javax.swing.JLabel jlTambahPengurus;
     private javax.swing.JLabel jlTanggal;
+    private javax.swing.JTable tableDaftarPengurus;
     private javax.swing.JTextField tfHarga;
+    public javax.swing.JTextField tfIdInventaris;
     private javax.swing.JPanel tfJabatan;
     private javax.swing.JTextField tfJumlah;
     private javax.swing.JTextField tfKeterangan;

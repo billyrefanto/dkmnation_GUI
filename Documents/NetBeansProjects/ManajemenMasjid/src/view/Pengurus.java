@@ -50,6 +50,7 @@ public class Pengurus extends javax.swing.JFrame {
         tfAlamatLengkap.setText("");
         tfKontakPengurus.setText("");
         tfTanggalLahir.setText("");
+        tfIdPengurus.setText("");
     }
 
     public void addPengurus() {
@@ -152,7 +153,7 @@ public class Pengurus extends javax.swing.JFrame {
             System.out.println("Tidak tidak boleh ada yang kosong!");
             JOptionPane.showMessageDialog(this, "Data Tidak Boleh Kosong!");
         } else {
-            queryUpdate = "UPDATE u_pengurus SET nama_lengkap =?,jenis_kelamin = ?,tanggal_lahir = ?,kontak = ?,alamat = ?,jabatan = ?,status = ? ,updated_at = ? WHERE id_m_masjid = '" + idMasjid + "'";
+            queryUpdate = "UPDATE u_pengurus SET nama_lengkap =?,jenis_kelamin =?,tanggal_lahir =?,kontak =?,alamat =?,jabatan =?,status =? ,updated_at =? WHERE id = '" + idPengurusData + "'";
             try {
                 Connection conn = (Connection) Config.configDB();
                 PreparedStatement ps = conn.prepareStatement(queryUpdate);
@@ -173,6 +174,32 @@ public class Pengurus extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Gagal Simpan Data!" + ex.getMessage());
             }
         }
+    }
+    
+    private void deletePengurus(){
+        String idPengurus,queryDelete,namaPengurus;
+        idPengurus = tfIdPengurus.getText();
+        namaPengurus = tfNamaPengurus.getText();
+        if (idPengurus.isEmpty()) {
+            System.out.println("Pilih data di tabel");
+            JOptionPane.showMessageDialog(this, "Pilih data di tabel");
+        } else {
+            queryDelete = "DELETE FROM u_pengurus WHERE id =?";
+            try {
+                Connection conn = (Connection) Config.configDB();
+                PreparedStatement ps = conn.prepareStatement(queryDelete);
+                ps.setString(1, idPengurus);
+    
+
+                int rowAffected = ps.executeUpdate();
+                System.out.println(idPengurus + " Berhasil Dihapus");
+                JOptionPane.showMessageDialog(this, namaPengurus + " Berhasil Dihapus");
+            } catch (SQLException ex) {
+                System.out.println("Gagal : " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "Gagal Simpan Data!" + ex.getMessage());
+            }
+        }
+        
     }
 
     public Pengurus() {
@@ -205,11 +232,8 @@ public class Pengurus extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jlKeuangan = new javax.swing.JLabel();
         jlProfileMasjid = new javax.swing.JLabel();
-        jlDaftarInventaris = new javax.swing.JLabel();
         jlInventaris = new javax.swing.JLabel();
         jlInformasiMasjid = new javax.swing.JLabel();
-        jlDaftarPengurus = new javax.swing.JLabel();
-        jlDetailKeuangan = new javax.swing.JLabel();
         jlKepengurusan = new javax.swing.JLabel();
         jlTambahPengurus = new javax.swing.JLabel();
         jlTambahKeuangan = new javax.swing.JLabel();
@@ -238,8 +262,8 @@ public class Pengurus extends javax.swing.JFrame {
         cbStatus = new javax.swing.JComboBox<>();
         tfKontakPengurus = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
-        btnReset1 = new java.awt.Button();
-        btnSimpan1 = new java.awt.Button();
+        btnDelete = new java.awt.Button();
+        btnUpdate = new java.awt.Button();
         tfIdPengurus = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -309,10 +333,6 @@ public class Pengurus extends javax.swing.JFrame {
             }
         });
 
-        jlDaftarInventaris.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jlDaftarInventaris.setForeground(new java.awt.Color(255, 255, 255));
-        jlDaftarInventaris.setText("       Daftar Inventaris");
-
         jlInventaris.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlInventaris.setForeground(new java.awt.Color(255, 255, 255));
         jlInventaris.setText("       Inventaris");
@@ -326,14 +346,6 @@ public class Pengurus extends javax.swing.JFrame {
         jlInformasiMasjid.setForeground(new java.awt.Color(255, 255, 255));
         jlInformasiMasjid.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_moon_star_24px.png"))); // NOI18N
         jlInformasiMasjid.setText("Informasi Masjid");
-
-        jlDaftarPengurus.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jlDaftarPengurus.setForeground(new java.awt.Color(255, 255, 255));
-        jlDaftarPengurus.setText("       Daftar Pengurus");
-
-        jlDetailKeuangan.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jlDetailKeuangan.setForeground(new java.awt.Color(255, 255, 255));
-        jlDetailKeuangan.setText("       Detail Keuangan");
 
         jlKepengurusan.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jlKepengurusan.setForeground(new java.awt.Color(255, 255, 255));
@@ -352,6 +364,11 @@ public class Pengurus extends javax.swing.JFrame {
         jlTambahKeuangan.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlTambahKeuangan.setForeground(new java.awt.Color(255, 255, 255));
         jlTambahKeuangan.setText("       Tambah Keuangan");
+        jlTambahKeuangan.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jlTambahKeuanganMouseClicked(evt);
+            }
+        });
 
         jLabel19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_drop_down_24px.png"))); // NOI18N
         jLabel19.setText("jLabel19");
@@ -378,13 +395,11 @@ public class Pengurus extends javax.swing.JFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jlDaftarPengurus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jlDaftarInventaris, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jlInventaris, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jlProfileMasjid, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jlKeluar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jlTambahPengurus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jlDetailKeuangan, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel7Layout.createSequentialGroup()
@@ -392,16 +407,15 @@ public class Pengurus extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jlKepengurusan, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addComponent(jlInformasiMasjid, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jlKeluar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jlKepengurusan, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -416,15 +430,11 @@ public class Pengurus extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlInventaris, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlDaftarInventaris, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jlKepengurusan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel19))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlTambahPengurus, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlDaftarPengurus, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jlKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -432,10 +442,8 @@ public class Pengurus extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlDetailKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlKeluar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(131, Short.MAX_VALUE))
         );
 
         jPanel8.setBackground(new java.awt.Color(7, 17, 44));
@@ -620,25 +628,25 @@ public class Pengurus extends javax.swing.JFrame {
         jLabel15.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
         jLabel15.setText("Tanggal Lahir");
 
-        btnReset1.setActionCommand("Registrasi");
-        btnReset1.setBackground(new java.awt.Color(255, 51, 0));
-        btnReset1.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        btnReset1.setForeground(new java.awt.Color(255, 255, 255));
-        btnReset1.setLabel("Delete");
-        btnReset1.addActionListener(new java.awt.event.ActionListener() {
+        btnDelete.setActionCommand("Registrasi");
+        btnDelete.setBackground(new java.awt.Color(255, 51, 0));
+        btnDelete.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnDelete.setForeground(new java.awt.Color(255, 255, 255));
+        btnDelete.setLabel("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnReset1ActionPerformed(evt);
+                btnDeleteActionPerformed(evt);
             }
         });
 
-        btnSimpan1.setActionCommand("Registrasi");
-        btnSimpan1.setBackground(new java.awt.Color(0, 51, 204));
-        btnSimpan1.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        btnSimpan1.setForeground(new java.awt.Color(255, 255, 255));
-        btnSimpan1.setLabel("Update");
-        btnSimpan1.addActionListener(new java.awt.event.ActionListener() {
+        btnUpdate.setActionCommand("Registrasi");
+        btnUpdate.setBackground(new java.awt.Color(0, 51, 204));
+        btnUpdate.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
+        btnUpdate.setLabel("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSimpan1ActionPerformed(evt);
+                btnUpdateActionPerformed(evt);
             }
         });
 
@@ -716,9 +724,9 @@ public class Pengurus extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(tfIdPengurus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnReset1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSimpan1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -782,8 +790,8 @@ public class Pengurus extends javax.swing.JFrame {
                         .addComponent(tfIdPengurus, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnReset1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSimpan1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(27, Short.MAX_VALUE))
@@ -855,11 +863,15 @@ public class Pengurus extends javax.swing.JFrame {
     }//GEN-LAST:event_jlLogoMouseClicked
 
     private void jlProfileMasjidMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlProfileMasjidMouseClicked
-        // TODO add your handling code here:
+       ProfilMasjid profilMasjid = new ProfilMasjid();
+       this.dispose();
+       profilMasjid.setVisible(true);
     }//GEN-LAST:event_jlProfileMasjidMouseClicked
 
     private void jlInventarisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlInventarisMouseClicked
-        // TODO add your handling code here:
+        Inventaris inventaris = new Inventaris();
+        this.dispose();
+        inventaris.setVisible(true);
     }//GEN-LAST:event_jlInventarisMouseClicked
 
     private void jlTambahPengurusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlTambahPengurusMouseClicked
@@ -916,6 +928,7 @@ public class Pengurus extends javax.swing.JFrame {
 
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
         addPengurus();
+        clearForm();
     }//GEN-LAST:event_btnSimpanActionPerformed
 
     private void tfKontakPengurusFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfKontakPengurusFocusGained
@@ -926,13 +939,15 @@ public class Pengurus extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tfKontakPengurusActionPerformed
 
-    private void btnReset1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReset1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnReset1ActionPerformed
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        deletePengurus();
+        clearForm();
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
-    private void btnSimpan1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpan1ActionPerformed
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         updatePengurus();
-    }//GEN-LAST:event_btnSimpan1ActionPerformed
+        clearForm();
+    }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void tfIdPengurusFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfIdPengurusFocusGained
         // TODO add your handling code here:
@@ -990,6 +1005,12 @@ public class Pengurus extends javax.swing.JFrame {
         
     }//GEN-LAST:event_tableDaftarPengurusMouseClicked
 
+    private void jlTambahKeuanganMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlTambahKeuanganMouseClicked
+       Keuangan keuangan = new Keuangan();
+       this.dispose();
+       keuangan.setVisible(true);
+    }//GEN-LAST:event_jlTambahKeuanganMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -1026,10 +1047,10 @@ public class Pengurus extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private java.awt.Button btnDelete;
     private java.awt.Button btnReset;
-    private java.awt.Button btnReset1;
     private java.awt.Button btnSimpan;
-    private java.awt.Button btnSimpan1;
+    private java.awt.Button btnUpdate;
     private javax.swing.JComboBox<String> cbJenisKelamin;
     private javax.swing.JComboBox<String> cbStatus;
     private javax.swing.JLabel jLabel1;
@@ -1050,10 +1071,7 @@ public class Pengurus extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel jlDaftarInventaris;
-    private javax.swing.JLabel jlDaftarPengurus;
     private javax.swing.JLabel jlDashboard;
-    private javax.swing.JLabel jlDetailKeuangan;
     private javax.swing.JLabel jlInformasiMasjid;
     private javax.swing.JLabel jlInventaris;
     private javax.swing.JLabel jlJabatan;

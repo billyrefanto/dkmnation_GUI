@@ -6,12 +6,17 @@
 package view;
 
 import controller.Config;
-import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.sql.Connection;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.DataKeuangan;
 import static view.Dashboard.idMasjid;
 import static view.LoginMember.namaLengkapData;
 
@@ -20,10 +25,13 @@ import static view.LoginMember.namaLengkapData;
  * @author Moch Billy Refanto
  */
 public class Keuangan extends javax.swing.JFrame {
-
+    ArrayList<DataKeuangan> datakeuangan = new ArrayList<>();
+    
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     LocalDateTime now = LocalDateTime.now();
     String dateToday = dateTimeFormatter.format(now);
+    
+    DefaultTableModel model;
 
     private void showData() {
         jlNamaLengkap.setText(namaLengkapData);
@@ -67,6 +75,70 @@ public class Keuangan extends javax.swing.JFrame {
         }
 
     }
+    
+    private void dataKeuangan() {
+        int nominalData,idKeuanganData;
+        String queryShow,keterangan,kategori,tanggal;
+        queryShow = "SELECT * FROM m_keuangan WHERE id_m_masjid = '" + idMasjid + "'";
+
+        try {
+            Connection conn = (Connection) Config.configDB();
+            Statement statement = conn.createStatement();
+            ResultSet res = statement.executeQuery(queryShow);
+            while (res.next()) {
+                idKeuanganData = res.getInt("id");
+                nominalData = res.getInt("nominal");
+                keterangan = res.getString("keterangan");
+                kategori = res.getString("kategori");
+                tanggal = res.getString("tanggal");
+                Object data[] = {
+                    idKeuanganData,nominalData,keterangan,kategori,tanggal
+                };
+
+                datakeuangan.add(new DataKeuangan(idKeuanganData,nominalData,keterangan,kategori,tanggal));
+                int index = datakeuangan.size() - 1;
+
+                model.addRow(new Object[]{
+                    datakeuangan.get(index).getNominal(),
+                    datakeuangan.get(index).getKategoriData(),
+                    datakeuangan.get(index).getKeteranganData(),
+                    datakeuangan.get(index).getTanggalData()
+                    
+
+                });
+                System.out.println("dataKeuangan()" + idKeuanganData + nominalData + kategori);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getMessage());
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+
+    }
+    
+    private void deleteKeuangan(){
+        String idKeuangan,queryDelete;
+        idKeuangan = tfIdData.getText();
+ 
+        if (idKeuangan.isEmpty()) {
+            System.out.println("Pilih data di tabel");
+            JOptionPane.showMessageDialog(this, "Pilih data di tabel");
+        } else {
+            queryDelete = "DELETE FROM m_keuangan WHERE id =?";
+            try {
+                Connection conn = (Connection) Config.configDB();
+                PreparedStatement ps = conn.prepareStatement(queryDelete);
+                ps.setString(1, idKeuangan);
+    
+
+                int rowAffected = ps.executeUpdate();
+                System.out.println(idKeuangan + " Berhasil Dihapus");
+                JOptionPane.showMessageDialog(this, idKeuangan + " Berhasil Dihapus");
+            } catch (SQLException ex) {
+                System.out.println("Gagal : " + ex.getMessage());
+                JOptionPane.showMessageDialog(this, "Gagal Simpan Data!" + ex.getMessage());
+            }
+        }
+    }
 
     private void clearForm() {
         tfNominal.setText("");
@@ -79,6 +151,12 @@ public class Keuangan extends javax.swing.JFrame {
         initComponents();
         showData();
         clearForm();
+        
+        String[] header = {"Nominal", "Kategori", "Keterangan", "Tanggal"};
+        model = new DefaultTableModel(header, 0);
+        tableDaftarPengurus.setModel(model);
+        
+        dataKeuangan();
     }
 
     /**
@@ -97,11 +175,8 @@ public class Keuangan extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jlKeuangan = new javax.swing.JLabel();
         jlProfileMasjid = new javax.swing.JLabel();
-        jlDaftarInventaris = new javax.swing.JLabel();
         jlInventaris = new javax.swing.JLabel();
         jlInformasiMasjid = new javax.swing.JLabel();
-        jlDaftarPengurus = new javax.swing.JLabel();
-        jlDetailKeuangan = new javax.swing.JLabel();
         jlKepengurusan = new javax.swing.JLabel();
         jlTambahPengurus = new javax.swing.JLabel();
         jlTambahKeuangan = new javax.swing.JLabel();
@@ -126,6 +201,11 @@ public class Keuangan extends javax.swing.JFrame {
         btnSimpan = new java.awt.Button();
         tfTanggal = new javax.swing.JTextField();
         cbKategori = new javax.swing.JComboBox<>();
+        jLabel10 = new javax.swing.JLabel();
+        tfIdData = new javax.swing.JTextField();
+        btnDelete = new java.awt.Button();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableDaftarPengurus = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -168,10 +248,6 @@ public class Keuangan extends javax.swing.JFrame {
             }
         });
 
-        jlDaftarInventaris.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jlDaftarInventaris.setForeground(new java.awt.Color(255, 255, 255));
-        jlDaftarInventaris.setText("       Daftar Inventaris");
-
         jlInventaris.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlInventaris.setForeground(new java.awt.Color(255, 255, 255));
         jlInventaris.setText("       Inventaris");
@@ -185,14 +261,6 @@ public class Keuangan extends javax.swing.JFrame {
         jlInformasiMasjid.setForeground(new java.awt.Color(255, 255, 255));
         jlInformasiMasjid.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8_moon_star_24px.png"))); // NOI18N
         jlInformasiMasjid.setText("Informasi Masjid");
-
-        jlDaftarPengurus.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jlDaftarPengurus.setForeground(new java.awt.Color(255, 255, 255));
-        jlDaftarPengurus.setText("       Daftar Pengurus");
-
-        jlDetailKeuangan.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jlDetailKeuangan.setForeground(new java.awt.Color(255, 255, 255));
-        jlDetailKeuangan.setText("       Detail Keuangan");
 
         jlKepengurusan.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jlKepengurusan.setForeground(new java.awt.Color(255, 255, 255));
@@ -237,13 +305,11 @@ public class Keuangan extends javax.swing.JFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jlDaftarPengurus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jlDaftarInventaris, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jlInventaris, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jlProfileMasjid, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jlKeluar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jlTambahPengurus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jlDetailKeuangan, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel7Layout.createSequentialGroup()
@@ -251,16 +317,15 @@ public class Keuangan extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jlKepengurusan, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addComponent(jlInformasiMasjid, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jlKeluar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jlKepengurusan, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -275,15 +340,11 @@ public class Keuangan extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlInventaris, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlDaftarInventaris, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jlKepengurusan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel19))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlTambahPengurus, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlDaftarPengurus, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jlKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -291,10 +352,8 @@ public class Keuangan extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlTambahKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jlDetailKeuangan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlKeluar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(131, Short.MAX_VALUE))
         );
 
         jPanel8.setBackground(new java.awt.Color(7, 17, 44));
@@ -347,7 +406,7 @@ public class Keuangan extends javax.swing.JFrame {
                 .addComponent(jlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(76, 76, 76)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 93, Short.MAX_VALUE))
+                .addGap(0, 115, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(82, 82, 82)
@@ -464,6 +523,62 @@ public class Keuangan extends javax.swing.JFrame {
         cbKategori.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         cbKategori.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pemasukan", "Pengeluaran" }));
 
+        jLabel10.setFont(new java.awt.Font("Tekton Pro", 0, 14)); // NOI18N
+        jLabel10.setText("ID");
+
+        tfIdData.setEditable(false);
+        tfIdData.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tfIdData.setMargin(new java.awt.Insets(3, 3, 3, 3));
+        tfIdData.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tfIdDataFocusGained(evt);
+            }
+        });
+        tfIdData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfIdDataActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setActionCommand("Registrasi");
+        btnDelete.setBackground(new java.awt.Color(255, 51, 0));
+        btnDelete.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        btnDelete.setForeground(new java.awt.Color(255, 255, 255));
+        btnDelete.setLabel("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        tableDaftarPengurus.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        tableDaftarPengurus.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Nominal", "Kategori", "Keterangan", "Tanggal"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tableDaftarPengurus.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableDaftarPengurusMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableDaftarPengurus);
+
         javax.swing.GroupLayout tfJabatanLayout = new javax.swing.GroupLayout(tfJabatan);
         tfJabatan.setLayout(tfJabatanLayout);
         tfJabatanLayout.setHorizontalGroup(
@@ -471,10 +586,16 @@ public class Keuangan extends javax.swing.JFrame {
             .addGroup(tfJabatanLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tfJabatanLayout.createSequentialGroup()
-                        .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(tfKeterangan)
-                            .addGroup(tfJabatanLayout.createSequentialGroup()
+                    .addGroup(tfJabatanLayout.createSequentialGroup()
+                        .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+                            .addComponent(tfTanggal, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE))
+                        .addGap(459, 459, 459))
+                    .addGroup(tfJabatanLayout.createSequentialGroup()
+                        .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tfKeterangan, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, tfJabatanLayout.createSequentialGroup()
                                 .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(tfNominal, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jlNamaLengkapPengurus))
@@ -482,19 +603,20 @@ public class Keuangan extends javax.swing.JFrame {
                                 .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jlJabatan)
                                     .addComponent(cbKategori, 0, 436, Short.MAX_VALUE)))
-                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 14, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tfJabatanLayout.createSequentialGroup()
-                        .addGap(0, 660, Short.MAX_VALUE)
-                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(tfJabatanLayout.createSequentialGroup()
-                        .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
-                            .addComponent(tfTanggal, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE))
-                        .addGap(449, 449, 449)))
-                .addContainerGap())
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, tfJabatanLayout.createSequentialGroup()
+                                .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(tfJabatanLayout.createSequentialGroup()
+                                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(tfIdData, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         tfJabatanLayout.setVerticalGroup(
             tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -515,11 +637,17 @@ public class Keuangan extends javax.swing.JFrame {
                 .addComponent(jLabel12)
                 .addGap(1, 1, 1)
                 .addComponent(tfTanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(174, 174, 174)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(tfJabatanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(tfIdData, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(70, Short.MAX_VALUE))
+                    .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(94, Short.MAX_VALUE))
         );
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
@@ -540,7 +668,7 @@ public class Keuangan extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 514, Short.MAX_VALUE))
+                .addGap(0, 536, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                     .addGap(0, 57, Short.MAX_VALUE)
@@ -587,15 +715,21 @@ public class Keuangan extends javax.swing.JFrame {
     }//GEN-LAST:event_jlLogoMouseClicked
 
     private void jlProfileMasjidMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlProfileMasjidMouseClicked
-        // TODO add your handling code here:
+       ProfilMasjid profilmasjid = new ProfilMasjid();
+       this.dispose();
+       profilmasjid.setVisible(true);
     }//GEN-LAST:event_jlProfileMasjidMouseClicked
 
     private void jlInventarisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlInventarisMouseClicked
-        // TODO add your handling code here:
+        Inventaris inventaris = new Inventaris();
+        this.dispose();
+        inventaris.setVisible(true);
     }//GEN-LAST:event_jlInventarisMouseClicked
 
     private void jlTambahPengurusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlTambahPengurusMouseClicked
-        // TODO add your handling code here:
+        Pengurus pengurus = new Pengurus();
+        this.dispose();
+        pengurus.setVisible(true);
     }//GEN-LAST:event_jlTambahPengurusMouseClicked
 
     private void jlKeluarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlKeluarMouseClicked
@@ -641,6 +775,50 @@ public class Keuangan extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tfKeteranganFocusGained
 
+    private void tfIdDataFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfIdDataFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfIdDataFocusGained
+
+    private void tfIdDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfIdDataActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfIdDataActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        deleteKeuangan();
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void tableDaftarPengurusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableDaftarPengurusMouseClicked
+
+        int i = tableDaftarPengurus.getSelectedRow();
+        int idKeuangan,nominal;
+        String keterangan,kategori,tanggal;
+
+        idKeuangan = datakeuangan.get(i).getIdData();
+        kategori = datakeuangan.get(i).getKategoriData();
+        nominal = datakeuangan.get(i).getNominal();
+        keterangan = datakeuangan.get(i).getKeteranganData();
+        tanggal = datakeuangan.get(i).getTanggalData();
+
+        int kt = 0;
+        switch (kategori) {
+            case "Pemasukan":
+            kt = 0;
+            break;
+            case "Pengeluaran":
+            kt = 1;
+            break;
+
+        }
+
+
+        cbKategori.setSelectedIndex(kt);
+        tfIdData.setText(String.valueOf(idKeuangan));
+        tfNominal.setText(String.valueOf(nominal));
+        tfKeterangan.setText(keterangan);
+        tfTanggal.setText(tanggal);
+
+    }//GEN-LAST:event_tableDaftarPengurusMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -677,10 +855,12 @@ public class Keuangan extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private java.awt.Button btnDelete;
     private java.awt.Button btnReset;
     private java.awt.Button btnSimpan;
     private javax.swing.JComboBox<String> cbKategori;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel20;
@@ -693,10 +873,8 @@ public class Keuangan extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
-    private javax.swing.JLabel jlDaftarInventaris;
-    private javax.swing.JLabel jlDaftarPengurus;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jlDashboard;
-    private javax.swing.JLabel jlDetailKeuangan;
     private javax.swing.JLabel jlInformasiMasjid;
     private javax.swing.JLabel jlInventaris;
     private javax.swing.JLabel jlJabatan;
@@ -710,6 +888,8 @@ public class Keuangan extends javax.swing.JFrame {
     private javax.swing.JLabel jlTambahKeuangan;
     private javax.swing.JLabel jlTambahPengurus;
     private javax.swing.JLabel jlTanggal;
+    private javax.swing.JTable tableDaftarPengurus;
+    public javax.swing.JTextField tfIdData;
     private javax.swing.JPanel tfJabatan;
     private javax.swing.JTextField tfKeterangan;
     private javax.swing.JTextField tfNominal;
