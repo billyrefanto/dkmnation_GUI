@@ -102,8 +102,7 @@ public class LoginMember extends javax.swing.JFrame {
         initComponents();
         clearForm();
 
-        Dimension screenSize
-                = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = this.getSize();
         if (frameSize.height > screenSize.height) {
             frameSize.height = screenSize.height;

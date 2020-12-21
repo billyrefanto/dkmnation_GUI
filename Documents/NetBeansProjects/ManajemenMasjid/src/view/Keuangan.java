@@ -6,6 +6,8 @@
 package view;
 
 import controller.Config;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
@@ -157,6 +159,18 @@ public class Keuangan extends javax.swing.JFrame {
         tableDaftarPengurus.setModel(model);
         
         dataKeuangan();
+        
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension frameSize = this.getSize();
+        if (frameSize.height > screenSize.height) {
+            frameSize.height = screenSize.height;
+        }
+        if (frameSize.width > screenSize.width) {
+            frameSize.width = screenSize.width;
+        }
+        this.setLocation(
+                (screenSize.width - frameSize.width) / 2,
+                (screenSize.height - frameSize.height) / 2);
     }
 
     /**

@@ -6,6 +6,8 @@
 package view;
 
 import controller.Config;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
 import java.sql.Connection;
@@ -209,11 +211,22 @@ public class Inventaris extends javax.swing.JFrame {
         clearForm();
         showData();
 
-        String[] header = {"Nama Lengkap", "Jenis Kelamin", "Tanggal Lahir", "Kontak", "Alamat", "Status"};
+        String[] header = {"Nama Barang", "Merek", "Keterangan", "Qty", "Satuan", "Kondisi"};
         model = new DefaultTableModel(header, 0);
         tableDaftarPengurus.setModel(model);
 
         dataInventaris();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension frameSize = this.getSize();
+        if (frameSize.height > screenSize.height) {
+            frameSize.height = screenSize.height;
+        }
+        if (frameSize.width > screenSize.width) {
+            frameSize.width = screenSize.width;
+        }
+        this.setLocation(
+                (screenSize.width - frameSize.width) / 2,
+                (screenSize.height - frameSize.height) / 2);
     }
 
     /**
@@ -945,6 +958,7 @@ public class Inventaris extends javax.swing.JFrame {
 
     private void btnSimpanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSimpanMouseClicked
         addInventaris();
+        clearForm();
     }//GEN-LAST:event_btnSimpanMouseClicked
 
     private void btnResetMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnResetMouseClicked
@@ -1020,7 +1034,7 @@ public class Inventaris extends javax.swing.JFrame {
 
         cbKondisi.setSelectedIndex(kondisiCb);
         cbSatuan.setSelectedIndex(satuanCb);
-        tfIdInventaris.setText(String.valueOf(tfIdInventaris));
+        tfIdInventaris.setText(String.valueOf(idInventaris));
         tfNamaBarang.setText(namaBarang);
         tfMerek.setText(merekBarang);
         tfKeterangan.setText(keterangan);

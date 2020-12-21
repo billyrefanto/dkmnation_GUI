@@ -6,6 +6,8 @@
 package view;
 
 import controller.Config;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.sql.ResultSet;
@@ -165,24 +167,10 @@ public class Dashboard extends javax.swing.JFrame {
     }
 
     private void showData() {
+        jlNamaLengkap.setText(namaLengkapData);
+        jlTanggal.setText(dateToday);
         System.out.println("showData id m_masjid : " + idMasjid + namaMasjidData + kapasitasMasjidData + alamatMasjidData + kelurahanData + kecamatanData + kabupatenData);
     }
-//    private void displayNama() throws SQLException{
-//        query = "SELECT * FROM m_users";
-//        
-//        Connection conn = (Connection)Config.configDB();
-//        Statement statement = conn.createStatement();
-//        ResultSet res = statement.executeQuery(query);
-//        try{
-//            while(res.next()){
-//            namaLengkap = res.getString("nama_lengkap");
-//            jlNamaLengkap.setText(namaLengkap);
-//        }
-//        }catch(SQLException e){
-//            JOptionPane.showMessageDialog(this, e.getMessage());
-//        }
-//        
-//    }
 
     public static String getNamaLengkap() {
         return namaLengkap;
@@ -198,6 +186,18 @@ public class Dashboard extends javax.swing.JFrame {
         dataKeuanganPengeluaran();
         dataKeuanganPemasukan();
         dataInventaris();
+        
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension frameSize = this.getSize();
+        if (frameSize.height > screenSize.height) {
+            frameSize.height = screenSize.height;
+        }
+        if (frameSize.width > screenSize.width) {
+            frameSize.width = screenSize.width;
+        }
+        this.setLocation(
+                (screenSize.width - frameSize.width) / 2,
+                (screenSize.height - frameSize.height) / 2);
 
     }
 

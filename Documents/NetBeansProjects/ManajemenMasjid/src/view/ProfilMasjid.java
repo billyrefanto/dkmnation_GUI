@@ -6,12 +6,14 @@
 package view;
 
 import controller.Config;
+import java.awt.Dimension;
 import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.awt.HeadlessException;
+import java.awt.Toolkit;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
@@ -219,6 +221,17 @@ public class ProfilMasjid extends javax.swing.JFrame {
 //        showData();
         cekData();
 //        clearForm();
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension frameSize = this.getSize();
+        if (frameSize.height > screenSize.height) {
+            frameSize.height = screenSize.height;
+        }
+        if (frameSize.width > screenSize.width) {
+            frameSize.width = screenSize.width;
+        }
+        this.setLocation(
+                (screenSize.width - frameSize.width) / 2,
+                (screenSize.height - frameSize.height) / 2);
     }
 
     /**

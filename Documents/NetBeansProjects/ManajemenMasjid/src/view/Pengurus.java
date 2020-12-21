@@ -6,6 +6,8 @@
 package view;
 
 import controller.Config;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
@@ -212,6 +214,17 @@ public class Pengurus extends javax.swing.JFrame {
         tableDaftarPengurus.setModel(model);
 
         dataPengurus();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension frameSize = this.getSize();
+        if (frameSize.height > screenSize.height) {
+            frameSize.height = screenSize.height;
+        }
+        if (frameSize.width > screenSize.width) {
+            frameSize.width = screenSize.width;
+        }
+        this.setLocation(
+                (screenSize.width - frameSize.width) / 2,
+                (screenSize.height - frameSize.height) / 2);
     }
 
     /**
