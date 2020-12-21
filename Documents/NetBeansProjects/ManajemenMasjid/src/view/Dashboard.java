@@ -23,7 +23,7 @@ import static view.LoginMember.namaLengkapData;
  */
 public class Dashboard extends javax.swing.JFrame {
 
-    static String query, namaLengkap, tanggalLoca, idMasjid,pemasukanData,pengeluaranData;
+    static String query, namaLengkap, tanggalLoca, idMasjid, pemasukanData, pengeluaranData, inventarisData;
     static String idMasjidData, namaMasjidData, luasTanahData, alamatMasjidData, kelurahanData, kecamatanData, kabupatenData, kodePosData, sejarahSingkatData, tahunBerdiriData, kapasitasMasjidData;
 
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
@@ -106,26 +106,18 @@ public class Dashboard extends javax.swing.JFrame {
         }
 
     }
-    
-    private void dataKeuangan() {
-        String queryPemasukan, queryPengeluaran;
-        queryPemasukan = "SELECT SUM(nominal) AS nominal FROM m_masjid WHERE m_keuangan = '" + idMasjid + "' and kategori = Pemasukan";
-        queryPengeluaran = "SELECT SUM(nominal) AS nominal FROM m_masjid WHERE m_keuangan = '" + idMasjid + "' and kategori = Pengeluaran";
+
+    private void dataKeuanganPemasukan() {
+        String queryPemasukan;
+        queryPemasukan = "SELECT SUM(nominal) FROM m_keuangan WHERE id_m_masjid = '" + idMasjid + "' and kategori = 'Pemasukan'";
         try {
             Connection conn = (Connection) Config.configDB();
             Statement statement = conn.createStatement();
             ResultSet res = statement.executeQuery(queryPemasukan);
-
             while (res.next()) {
-                pemasukanData = res.getString("nominal");
-                
-                jlPemasukanData.setText("pemasukanData");
+                pemasukanData = res.getString("SUM(nominal)");
+                jlPemasukanData.setText("Rp." + pemasukanData + ",-");
 
-            }
-            ResultSet res2 = statement.executeQuery(queryPemasukan);
-            while(res.next()){
-                pengeluaranData = res.getString("nominal");
-                jlPengeluaranData.setText("pemasukanData");
             }
         } catch (SQLException e) {
             System.out.println("Error " + e.getMessage());
@@ -133,7 +125,44 @@ public class Dashboard extends javax.swing.JFrame {
         }
 
     }
-    
+
+    private void dataKeuanganPengeluaran() {
+        String queryPengeluaran;
+        queryPengeluaran = "SELECT SUM(nominal) FROM m_keuangan WHERE id_m_masjid = '" + idMasjid + "' and kategori = 'Pengeluaran'";
+        try {
+            Connection conn = (Connection) Config.configDB();
+            Statement statement = conn.createStatement();
+            ResultSet res2 = statement.executeQuery(queryPengeluaran);
+            while (res2.next()) {
+                pengeluaranData = res2.getString("SUM(nominal)");
+                jlPengeluaranData.setText("Rp." + pengeluaranData + ",-");
+
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getMessage());
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+
+    }
+
+    private void dataInventaris() {
+        String queryBarang;
+        queryBarang = "SELECT SUM(qty) FROM m_inventari_masjid WHERE id_m_masjid = '" + idMasjid + "'";
+        try {
+            Connection conn = (Connection) Config.configDB();
+            Statement statement = conn.createStatement();
+            ResultSet res3 = statement.executeQuery(queryBarang);
+            while (res3.next()) {
+                inventarisData = res3.getString("SUM(qty)");
+                jlInventarisData.setText(inventarisData + " Unit");
+
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getMessage());
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+
+    }
 
     private void showData() {
         System.out.println("showData id m_masjid : " + idMasjid + namaMasjidData + kapasitasMasjidData + alamatMasjidData + kelurahanData + kecamatanData + kabupatenData);
@@ -166,7 +195,9 @@ public class Dashboard extends javax.swing.JFrame {
         initComponents();
         showData();
         dataMasjid();
-        dataKeuangan();
+        dataKeuanganPengeluaran();
+        dataKeuanganPemasukan();
+        dataInventaris();
 
     }
 
@@ -224,6 +255,7 @@ public class Dashboard extends javax.swing.JFrame {
         jlLuasTanah = new javax.swing.JLabel();
         jlTahunBerdiri = new javax.swing.JLabel();
         jlSejarah = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -695,6 +727,9 @@ public class Dashboard extends javax.swing.JFrame {
         jlSejarah.setText("sejarah masjid data");
         jlSejarah.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
+        jLabel3.setFont(new java.awt.Font("Tekton Pro", 1, 18)); // NOI18N
+        jLabel3.setText("Informasi Masjid");
+
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
         jPanel11Layout.setHorizontalGroup(
@@ -706,13 +741,18 @@ public class Dashboard extends javax.swing.JFrame {
                     .addComponent(jlAlamatData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jlSejarah, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jlLuasTanah, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jlTahunBerdiri, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jlTahunBerdiri, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(18, 18, 18)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlNamaMasjidData)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlAlamatData, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -808,9 +848,9 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_jlDaftarInventarisMouseClicked
 
     private void jlTambahKeuanganMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlTambahKeuanganMouseClicked
-       Keuangan keuangan = new Keuangan();
-       this.dispose();
-       keuangan.setVisible(true);
+        Keuangan keuangan = new Keuangan();
+        this.dispose();
+        keuangan.setVisible(true);
     }//GEN-LAST:event_jlTambahKeuanganMouseClicked
 
     /**
@@ -855,6 +895,7 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
