@@ -89,6 +89,9 @@ public class Pengurus extends javax.swing.JFrame {
                 int rowAffected = ps.executeUpdate();
                 System.out.println(namaPengurus + " Berhasil Disimpan!");
                 JOptionPane.showMessageDialog(this, namaPengurus + " Berhasil Disimpan!");
+                model.setRowCount(0);
+                dataPengurus();
+
             } catch (SQLException ex) {
                 System.out.println("Gagal : " + ex.getMessage());
                 JOptionPane.showMessageDialog(this, "Gagal Simpan Data!" + ex.getMessage());
@@ -138,7 +141,8 @@ public class Pengurus extends javax.swing.JFrame {
         }
 
     }
-    private void updatePengurus(){
+
+    private void updatePengurus() {
         String namaPengurus, jabatan, alamatLengkap, jenisKelamin, statusAnggota, kontak, tanggalLahir, queryUpdate;
         namaPengurus = tfNamaPengurus.getText();
         jabatan = tfJabatanPengurus.getText();
@@ -171,15 +175,18 @@ public class Pengurus extends javax.swing.JFrame {
                 int rowAffected = ps.executeUpdate();
                 System.out.println(namaPengurus + " Berhasil Update!");
                 JOptionPane.showMessageDialog(this, namaPengurus + " Berhasil Update!");
+
+                model.setRowCount(0);
+                dataPengurus();
             } catch (SQLException ex) {
                 System.out.println("Gagal : " + ex.getMessage());
                 JOptionPane.showMessageDialog(this, "Gagal Simpan Data!" + ex.getMessage());
             }
         }
     }
-    
-    private void deletePengurus(){
-        String idPengurus,queryDelete,namaPengurus;
+
+    private void deletePengurus() {
+        String idPengurus, queryDelete, namaPengurus;
         idPengurus = tfIdPengurus.getText();
         namaPengurus = tfNamaPengurus.getText();
         if (idPengurus.isEmpty()) {
@@ -191,17 +198,19 @@ public class Pengurus extends javax.swing.JFrame {
                 Connection conn = (Connection) Config.configDB();
                 PreparedStatement ps = conn.prepareStatement(queryDelete);
                 ps.setString(1, idPengurus);
-    
 
                 int rowAffected = ps.executeUpdate();
                 System.out.println(idPengurus + " Berhasil Dihapus");
                 JOptionPane.showMessageDialog(this, namaPengurus + " Berhasil Dihapus");
+
+                model.setRowCount(0);
+                dataPengurus();
             } catch (SQLException ex) {
                 System.out.println("Gagal : " + ex.getMessage());
                 JOptionPane.showMessageDialog(this, "Gagal Simpan Data!" + ex.getMessage());
             }
         }
-        
+
     }
 
     public Pengurus() {
@@ -877,9 +886,9 @@ public class Pengurus extends javax.swing.JFrame {
     }//GEN-LAST:event_jlLogoMouseClicked
 
     private void jlProfileMasjidMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlProfileMasjidMouseClicked
-       ProfilMasjid profilMasjid = new ProfilMasjid();
-       this.dispose();
-       profilMasjid.setVisible(true);
+        ProfilMasjid profilMasjid = new ProfilMasjid();
+        this.dispose();
+        profilMasjid.setVisible(true);
     }//GEN-LAST:event_jlProfileMasjidMouseClicked
 
     private void jlInventarisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlInventarisMouseClicked
@@ -994,9 +1003,9 @@ public class Pengurus extends javax.swing.JFrame {
             case "Perempuan":
                 jk = 1;
                 break;
-                
+
         }
-        
+
         int st = 0;
         switch (status) {
             case "Aktif":
@@ -1005,9 +1014,9 @@ public class Pengurus extends javax.swing.JFrame {
             case "Non-Aktif":
                 jk = 1;
                 break;
-                
+
         }
-        
+
         cbJenisKelamin.setSelectedIndex(jk);
         cbStatus.setSelectedIndex(st);
         tfIdPengurus.setText(String.valueOf(idPengurus));
@@ -1016,13 +1025,13 @@ public class Pengurus extends javax.swing.JFrame {
         tfAlamatLengkap.setText(alamat);
         tfKontakPengurus.setText(kontak);
         tfTanggalLahir.setText(tanggalLahir);
-        
+
     }//GEN-LAST:event_tableDaftarPengurusMouseClicked
 
     private void jlTambahKeuanganMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jlTambahKeuanganMouseClicked
-       Keuangan keuangan = new Keuangan();
-       this.dispose();
-       keuangan.setVisible(true);
+        Keuangan keuangan = new Keuangan();
+        this.dispose();
+        keuangan.setVisible(true);
     }//GEN-LAST:event_jlTambahKeuanganMouseClicked
 
     /**

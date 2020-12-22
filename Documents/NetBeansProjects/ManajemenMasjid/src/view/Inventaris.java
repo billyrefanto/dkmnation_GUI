@@ -86,6 +86,9 @@ public class Inventaris extends javax.swing.JFrame {
                 int rowAffected = ps.executeUpdate();
                 System.out.println(namaBarang + " Berhasil Disimpan!");
                 JOptionPane.showMessageDialog(this, "Berhasil Disimpan!");
+                
+                model.setRowCount(0);
+                dataInventaris();
             } catch (SQLException ex) {
                 System.out.println("Gagal : " + ex.getMessage());
                 JOptionPane.showMessageDialog(this, "Gagal Simpan Data!" + ex.getMessage());
@@ -173,6 +176,9 @@ public class Inventaris extends javax.swing.JFrame {
                 int rowAffected = ps.executeUpdate();
                 System.out.println(namaBarang + " Berhasil Update!");
                 JOptionPane.showMessageDialog(this, namaBarang + " Berhasil Update!");
+                
+                model.setRowCount(0);
+                dataInventaris();
             } catch (SQLException ex) {
                 System.out.println("Gagal : " + ex.getMessage());
                 JOptionPane.showMessageDialog(this, "Gagal Simpan Data!" + ex.getMessage());
@@ -197,6 +203,9 @@ public class Inventaris extends javax.swing.JFrame {
                 int rowAffected = ps.executeUpdate();
                 System.out.println(idInventaris + " Berhasil Dihapus");
                 JOptionPane.showMessageDialog(this, idInventaris + " Berhasil Dihapus");
+                
+                model.setRowCount(0);
+                dataInventaris();
             } catch (SQLException ex) {
                 System.out.println("Gagal : " + ex.getMessage());
                 JOptionPane.showMessageDialog(this, "Gagal Simpan Data!" + ex.getMessage());

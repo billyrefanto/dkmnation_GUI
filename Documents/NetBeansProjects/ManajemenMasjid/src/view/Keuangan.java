@@ -70,6 +70,10 @@ public class Keuangan extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Berhasil Disimpan!");
 
                 clearForm();
+                
+                model.setRowCount(0);
+                dataKeuangan();
+                
             } catch (SQLException ex) {
                 System.out.println("Gagal : " + ex.getMessage());
                 JOptionPane.showMessageDialog(this, "Gagal Simpan Data!" + ex.getMessage());
@@ -135,6 +139,9 @@ public class Keuangan extends javax.swing.JFrame {
                 int rowAffected = ps.executeUpdate();
                 System.out.println(idKeuangan + " Berhasil Dihapus");
                 JOptionPane.showMessageDialog(this, idKeuangan + " Berhasil Dihapus");
+                
+                model.setRowCount(0);
+                dataKeuangan();
             } catch (SQLException ex) {
                 System.out.println("Gagal : " + ex.getMessage());
                 JOptionPane.showMessageDialog(this, "Gagal Simpan Data!" + ex.getMessage());
@@ -803,7 +810,7 @@ public class Keuangan extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void tableDaftarPengurusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableDaftarPengurusMouseClicked
-
+        
         int i = tableDaftarPengurus.getSelectedRow();
         int idKeuangan,nominal;
         String keterangan,kategori,tanggal;
