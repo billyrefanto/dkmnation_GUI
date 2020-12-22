@@ -49,6 +49,7 @@ public class Inventaris extends javax.swing.JFrame {
         tfKeterangan.setText("");
         tfJumlah.setText("");
         tfHarga.setText("");
+        tfIdInventaris.setText("");
     }
 
     public void addInventaris() {

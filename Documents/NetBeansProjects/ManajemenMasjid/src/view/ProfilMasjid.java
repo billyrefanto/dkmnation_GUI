@@ -71,7 +71,14 @@ public class ProfilMasjid extends javax.swing.JFrame {
                 || tahunBerdiri.isEmpty() || kapasitasMasjid.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Update Informasi Masjid!");
             System.out.println("Data tidak boleh ada yang kosong!");
-        } else {
+        } else if (sejarahSingkat.length() > 120) {
+            JOptionPane.showMessageDialog(this, "Sejarah Singkat tidak boleh melebihi 120 karakter");
+            System.out.println("Tidak boleh melebihi 120 karakter");
+        }else if (alamatMasjid.length() > 23) {
+            JOptionPane.showMessageDialog(this, "Alamat tidak boleh melebihi 23 karakter");
+            System.out.println("Alamat tidak boleh melebihi 120 karakter");
+        }
+        else {
 //            queryInsert = "INSERT INTO m_masjid(id_m_users,nama_masjid,kapasitas_jamaah,alamat,kelurahan,kecamatan,kabupaten,kode_pos,luas_tanah,tahun_berdiri,sejarah_masjid,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
             queryUpdate = "UPDATE m_masjid SET nama_masjid =?,kapasitas_jamaah=?,alamat=?,kelurahan=?,kecamatan=?,kabupaten=?,kode_pos=?,luas_tanah=?,tahun_berdiri=?,sejarah_masjid=?,updated_at=? WHERE id = '" + idMasjid + "' ";
             try {
@@ -194,9 +201,9 @@ public class ProfilMasjid extends javax.swing.JFrame {
    
     
     
-//    private void showData() {
-//        jlNamaLengkap.setText(namaLengkapData);
-//        jlTanggal.setText(dateToday);
+    private void showData() {
+        jlNamaLengkap.setText(namaLengkapData);
+        jlTanggal.setText(dateToday);
 //
 //        tfNamaMasjid.setText(namaMasjidData);
 //        tfLuasTanah.setText(luasTanahData);
@@ -211,14 +218,14 @@ public class ProfilMasjid extends javax.swing.JFrame {
 //
 //        System.out.println("showData() id_m_masjid " + idMasjid + " Luas tanah " + luasTanahData + alamatMasjidData + kelurahanData + sejarahSingkatData);
 //
-//    }
+    }
 
     /**
      * Creates new form ProfilMasjid
      */
     public ProfilMasjid() {
         initComponents();
-//        showData();
+        showData();
         cekData();
 //        clearForm();
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
