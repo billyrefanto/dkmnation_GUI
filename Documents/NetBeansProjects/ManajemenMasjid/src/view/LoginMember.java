@@ -136,6 +136,7 @@ public class LoginMember extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Login Akun");
         setPreferredSize(new java.awt.Dimension(1000, 700));
 
         tpPassword.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N

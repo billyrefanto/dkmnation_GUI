@@ -255,6 +255,7 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Admin Dashboard");
 
         jLabel1.setFont(new java.awt.Font("Tekton Pro", 1, 18)); // NOI18N
         jLabel1.setText("Dashboard");

@@ -204,6 +204,7 @@ public class Register extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Registrasi Akun");
         setPreferredSize(new java.awt.Dimension(1000, 700));
 
         jPanel1.setPreferredSize(new java.awt.Dimension(1000, 500));

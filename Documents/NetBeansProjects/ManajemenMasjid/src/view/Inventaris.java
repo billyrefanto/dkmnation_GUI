@@ -287,6 +287,7 @@ public class Inventaris extends javax.swing.JFrame {
         jlTanggal = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Inventaris Barang");
 
         jPanel3.setBackground(new java.awt.Color(78, 115, 223));
         jPanel3.setToolTipText("");

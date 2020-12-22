@@ -223,6 +223,7 @@ public class Keuangan extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Keuangan");
 
         jlTanggal.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jlTanggal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);

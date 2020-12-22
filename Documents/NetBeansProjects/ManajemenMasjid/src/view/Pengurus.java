@@ -284,6 +284,7 @@ public class Pengurus extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Kepengurusan");
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 

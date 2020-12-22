@@ -298,6 +298,7 @@ public class ProfilMasjid extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Informasi Masjid");
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
